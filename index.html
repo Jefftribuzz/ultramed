@@ -1,0 +1,1590 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diagnóstico gratuito de Saúde Ocupacional | Ultramed Ocupacional</title>
+<meta name="description" content="Descubra em 2 minutos se sua empresa está em dia com a saúde ocupacional e evite multas. Diagnóstico gratuito de PGR, PCMSO, exames, laudos e eSocial.">
+<meta name="theme-color" content="#157a5a">
+<meta name="color-scheme" content="light">
+<meta name="format-detection" content="telephone=no">
+<!-- [EDITAR] Endereço final da página (usado por buscadores e pré-visualização de links) -->
+<link rel="canonical" href="https://tribuzz.com.br/ultramed/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Ultramed Ocupacional">
+<meta property="og:title" content="PGR, PCMSO, exames e eSocial: o que está faltando na sua empresa?">
+<meta property="og:description" content="Diagnóstico gratuito em 2 minutos: score de conformidade, semáforo por área e a lista do que falta para ficar em dia.">
+<meta property="og:url" content="https://tribuzz.com.br/ultramed/">
+<!-- [EDITAR] Imagem de pré-visualização (1200x630). Descomente e aponte para o arquivo:
+<meta property="og:image" content="https://tribuzz.com.br/ultramed/capa.jpg"> -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23157a5a'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
+
+<!--
+==================================================================================================
+  ULTRAMED OCUPACIONAL — DIAGNÓSTICO GRATUITO DE CONFORMIDADE EM SST
+  Arquivo único (HTML + CSS + JS). Sem build e sem dependências externas.
+==================================================================================================
+
+  ONDE EDITAR — tudo fica no objeto CONFIG, no início do <script>, lá embaixo:
+
+  1) WHATSAPP ........ CONFIG.empresa.whatsapp  → só dígitos: 55 + DDD + número (ex.: "5532999002140").
+                       Atenção: o mesmo número aparece também no bloco <noscript> (procure "wa.me").
+  2) META PIXEL ...... CONFIG.rastreamento.metaPixelId → ID do pixel/conjunto de dados. Vazio = desligado.
+                       Eventos enviados: PageView (abrir), InicioDiagnostico (clicar em começar),
+                       Lead (enviar o formulário) e Contact (clicar no WhatsApp).
+  3) WEBHOOK/CRM ..... CONFIG.rastreamento.webhookUrl → URL do Make, n8n, Kommo etc. Vazio = desligado.
+                       Envia os campos do lead, score, pendências, UTMs e fbp/fbc. Se falhar, a
+                       experiência do usuário NÃO é afetada (o WhatsApp continua funcionando).
+  4) GOOGLE TAG MANAGER (opcional) .. CONFIG.rastreamento.gtmId → "GTM-XXXXXXX".
+  5) CORES ........... CONFIG.marca (verde, verdeEscuro, azul). As demais cores ficam no :root do <style>.
+  6) LOGO ............ CONFIG.empresa.logoUrl → nome do arquivo de imagem colocado na mesma pasta
+                       (ex.: "logo-ultramed.png"). Vazio = logo em texto.
+  7) LGPD ............ CONFIG.empresa.politicaPrivacidadeUrl e CONFIG.empresa.cnpj (aparecem no
+                       consentimento e no rodapé). Recomendado preencher antes de anunciar.
+  8) PERGUNTAS ....... CONFIG.blocos → cada pergunta tem texto, peso, opções (valor 1 = em dia,
+                       0.5 = parcial, 0 = não/não sei) e a pendência que aparece no resultado.
+                       "mostrarSe" controla quando a pergunta/bloco aparece (porte, setor etc.).
+  9) PRAZO NR-01 ..... CONFIG.nr01.dataFiscalizacao. Os textos mudam sozinhos de "a partir de"
+                       para "desde" quando a data passa.
+
+  COMO PUBLICAR EM tribuzz.com.br/ultramed
+  - Crie uma pasta chamada "ultramed" na raiz do site (ex.: public_html/ultramed no cPanel/Hostinger)
+    e coloque este arquivo dentro dela com o nome index.html. Pronto: tribuzz.com.br/ultramed/
+  - Em sites WordPress isso funciona do mesmo jeito (a pasta real tem prioridade sobre as páginas).
+  - Alternativa: subdomínio ultramed.tribuzz.com.br apontando (CNAME) para um site no Netlify/Vercel,
+    publicado arrastando a pasta com este index.html.
+  Detalhes e checklist antes de anunciar: veja o README.md.
+
+  AVISO: diagnóstico preliminar e orientativo. Não é auditoria legal nem consultoria jurídica.
+==================================================================================================
+-->
+
+<style>
+  /* ============================ TOKENS (cores, raios, fontes) ============================ */
+  :root{
+    color-scheme: light;
+    --verde:        #157a5a;   /* primária — contraste AA com texto branco */
+    --verde-escuro: #0e5a43;
+    --verde-suave:  #e6f4ee;
+    --verde-linha:  #b9dccd;
+    --azul:         #1d4e6b;
+    --azul-suave:   #e9f1f6;
+
+    --fundo:        #f4f7f6;   /* neutro com leve viés verde */
+    --superficie:   #ffffff;
+    --texto:        #13221d;
+    --texto-suave:  #4a5d57;
+    --borda:        #d6e3de;
+
+    /* semáforo (separado da cor da marca) */
+    --ok:            #1a7f4e;  --ok-suave:      #e3f3ea;
+    --atencao:       #9a5b00;  --atencao-suave: #fdf0d9;  --atencao-linha: #f1d39c;
+    --critico:       #b3261e;  --critico-suave: #fbe8e6;
+
+    --whats:        #25d366;
+    --whats-texto:  #073b22;
+
+    --raio: 14px;
+    --raio-sm: 10px;
+    --max: 600px;
+    --sombra: 0 1px 2px rgba(19,34,29,.06), 0 8px 24px rgba(19,34,29,.06);
+    --fonte: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* ============================ BASE ============================ */
+  *, *::before, *::after{ box-sizing:border-box; }
+  [hidden]{ display:none !important; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0; min-height:100vh; display:flex; flex-direction:column;
+    background:var(--fundo); color:var(--texto);
+    font:400 1rem/1.55 var(--fonte);
+    -webkit-font-smoothing:antialiased;
+  }
+  main{ flex:1; }
+  h1, h2, h3{ margin:0; line-height:1.2; letter-spacing:-.01em; text-wrap:balance; }
+  p{ margin:0; }
+  a{ color:var(--azul); }
+  img{ max-width:100%; height:auto; }
+  button, input{ font:inherit; }
+  :focus-visible{ outline:3px solid var(--azul); outline-offset:2px; }
+  [data-foco]:focus{ outline:none; }
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .rotulo{ font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--texto-suave); }
+
+  /* ============================ CABEÇALHO ============================ */
+  .topo{ position:sticky; top:0; z-index:10; background:var(--superficie); border-bottom:1px solid var(--borda); }
+  .topo-inner{ max-width:var(--max); margin:0 auto; padding:10px 16px; min-height:58px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .logo{ display:inline-flex; align-items:center; gap:10px; color:var(--verde-escuro); font-weight:800; font-size:1.0625rem; letter-spacing:-.01em; }
+  .logo img{ display:block; height:34px; width:auto; }
+  .logo-marca{ width:30px; height:30px; border-radius:8px; background:var(--verde); display:grid; place-items:center; flex:none; }
+  .logo-texto small{ display:block; font-size:.625rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--texto-suave); }
+  .topo-tag{ font-size:.75rem; font-weight:700; color:var(--verde-escuro); background:var(--verde-suave); padding:4px 10px; border-radius:999px; white-space:nowrap; }
+  .progresso{ height:4px; background:var(--verde-suave); }
+  .progresso span{ display:block; height:100%; width:0; background:var(--verde); transition:width .35s ease; }
+
+  /* ============================ ESTRUTURA ============================ */
+  .container{ width:100%; max-width:var(--max); margin:0 auto; padding:20px 16px 32px; }
+  .tela{ display:flex; flex-direction:column; gap:20px; animation:entra .3s ease-out both; }
+  @keyframes entra{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+  .cartao{ background:var(--superficie); border:1px solid var(--borda); border-radius:var(--raio); box-shadow:var(--sombra); padding:20px; }
+  @media (min-width:480px){ .cartao{ padding:28px; } }
+
+  /* ============================ BOTÕES ============================ */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    min-height:52px; padding:12px 22px; border:0; border-radius:12px;
+    font-weight:700; font-size:1rem; line-height:1.2; text-align:center; text-decoration:none; cursor:pointer;
+    transition:background-color .15s ease, transform .1s ease, box-shadow .15s ease, opacity .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+  .btn-primario{ background:var(--verde); color:#fff; box-shadow:0 4px 14px rgba(21,122,90,.28); }
+  .btn-primario:hover:not([disabled]){ background:var(--verde-escuro); }
+  .btn-largo{ width:100%; min-height:56px; font-size:1.0625rem; }
+  .btn-voltar{ background:var(--superficie); color:var(--texto); border:1.5px solid var(--borda); padding:12px 16px; }
+  .btn-voltar:hover{ border-color:var(--verde-linha); }
+  .btn-whats{ width:100%; min-height:58px; font-size:1.0625rem; background:var(--whats); color:var(--whats-texto); box-shadow:0 6px 18px rgba(37,211,102,.32); }
+  .btn-whats:hover{ background:#1fc55c; }
+  .btn-texto{ min-height:44px; background:transparent; color:var(--texto-suave); text-decoration:underline; text-underline-offset:3px; }
+  .btn-texto:hover{ color:var(--texto); }
+  .nav{ display:flex; gap:10px; }
+  .nav .btn-primario{ flex:1; }
+
+  /* ============================ HERO ============================ */
+  .hero{ gap:18px; padding-top:4px; }
+  .aviso-nr{
+    align-self:flex-start; display:inline-flex; align-items:center; gap:8px;
+    font-size:.8125rem; font-weight:700; line-height:1.3; color:var(--atencao);
+    background:var(--atencao-suave); border:1px solid var(--atencao-linha);
+    padding:6px 12px; border-radius:999px;
+  }
+  .aviso-nr svg{ flex:none; }
+  .hero h1{ font-size:clamp(1.65rem, 6.6vw, 2.3rem); font-weight:800; }
+  .hero h1 em{ font-style:normal; color:var(--verde); }
+  .hero-sub{ font-size:1.0625rem; color:var(--texto-suave); max-width:46ch; }
+  .hero-cartao{ display:grid; gap:18px; }
+  .recebe{ list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+  .recebe li{ display:flex; gap:10px; align-items:flex-start; }
+  .recebe svg{ flex:none; margin-top:3px; color:var(--verde); }
+  .recebe strong{ display:block; }
+  .recebe span{ color:var(--texto-suave); font-size:.9375rem; }
+  .hero-acao{ display:grid; gap:10px; }
+  .selo{ justify-self:start; display:inline-flex; align-items:center; gap:6px; font-size:.875rem; font-weight:700; color:var(--verde-escuro); }
+  .hero-meta{ font-size:.8125rem; color:var(--texto-suave); }
+  .avaliadas{ display:grid; gap:10px; }
+  .chips{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+  .chips li{ font-size:.8125rem; font-weight:600; padding:6px 12px; border-radius:999px; background:var(--superficie); border:1px solid var(--borda); }
+
+  /* ============================ PERGUNTAS ============================ */
+  .pergunta{ display:flex; flex-direction:column; gap:18px; }
+  .etapa{ font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--verde-escuro); }
+  .etapa span{ color:var(--texto-suave); }
+  .pergunta-titulo{ font-size:1.3125rem; font-weight:800; }
+  .ajuda{ margin-top:8px; color:var(--texto-suave); font-size:.9375rem; }
+  .opcoes{ display:grid; gap:10px; }
+  .opcao{
+    display:flex; align-items:center; gap:12px; min-height:54px; padding:12px 14px;
+    background:var(--superficie); border:1.5px solid var(--borda); border-radius:var(--raio-sm);
+    cursor:pointer; transition:border-color .15s ease, background-color .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  @media (hover:hover){ .opcao:hover{ border-color:var(--verde-linha); background:#fafdfb; } }
+  .opcao input{ width:20px; height:20px; margin:0; flex:none; accent-color:var(--verde); }
+  .opcao input:focus-visible{ outline:3px solid var(--azul); outline-offset:3px; }
+  .opcao.marcada{ border-color:var(--verde); background:var(--verde-suave); }
+  .opcao.marcada span{ font-weight:600; }
+
+  /* ============================ FORMULÁRIO ============================ */
+  .captura{ display:grid; gap:18px; }
+  .captura-titulo{ font-size:1.375rem; font-weight:800; }
+  .captura-sub{ color:var(--texto-suave); margin-top:6px; }
+  .campos{ display:grid; gap:16px; }
+  .campo{ display:grid; gap:6px; }
+  .campo label{ font-weight:700; font-size:.9375rem; }
+  .campo input{
+    width:100%; min-height:50px; padding:12px 14px; font-size:1rem; color:var(--texto);
+    background:#fff; border:1.5px solid var(--borda); border-radius:var(--raio-sm);
+    -webkit-appearance:none; appearance:none;
+  }
+  .campo input::placeholder{ color:#7b8c86; }
+  .campo input:focus{ outline:none; border-color:var(--verde); box-shadow:0 0 0 3px rgba(21,122,90,.18); }
+  .campo input[aria-invalid="true"]{ border-color:var(--critico); }
+  .erro{ color:var(--critico); font-size:.8125rem; font-weight:600; }
+  .erro:empty{ display:none; }
+  .consentimento-wrap{ display:grid; gap:6px; }
+  .consentimento{
+    display:flex; gap:12px; align-items:flex-start; padding:14px;
+    background:var(--azul-suave); border:1.5px solid transparent; border-radius:var(--raio-sm);
+    font-size:.875rem; line-height:1.5; cursor:pointer;
+  }
+  .consentimento input{ width:22px; height:22px; margin:1px 0 0; flex:none; accent-color:var(--verde); }
+  .consentimento.invalido{ border-color:var(--critico); }
+  .nota-privacidade{ font-size:.8125rem; color:var(--texto-suave); }
+  .armadilha{ position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+
+  /* ============================ RESULTADO ============================ */
+  .res-cabecalho{ display:grid; gap:8px; }
+  .res-cabecalho h1{ font-size:1.625rem; font-weight:800; }
+  .res-intro{ color:var(--texto-suave); }
+  .placar{ display:grid; justify-items:center; text-align:center; gap:12px; }
+  .gauge{ position:relative; width:min(240px, 72vw); }
+  .gauge svg{ display:block; width:100%; height:auto; }
+  .gauge-trilho{ fill:none; stroke:#e5ece9; stroke-width:14; stroke-linecap:round; }
+  .gauge-valor{ fill:none; stroke:var(--cor-faixa); stroke-width:14; stroke-linecap:round; transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1); }
+  .placar-num{ position:absolute; left:0; right:0; bottom:0; font-size:3rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums; }
+  .placar-num small{ font-size:1rem; font-weight:700; color:var(--texto-suave); margin-left:2px; }
+  .faixa{ display:inline-block; padding:6px 16px; border-radius:999px; background:var(--cor-faixa); color:#fff; font-weight:800; font-size:.9375rem; }
+  .faixa-frase{ max-width:40ch; }
+  .placar-resumo{ font-size:.875rem; color:var(--texto-suave); text-wrap:balance; }
+  /* Títulos e cartões não ficam escondidos atrás do cabeçalho fixo ao rolar até eles */
+  .secao, .pend, .urgencia, .cta-bloco{ scroll-margin-top:80px; }
+  .btn-whats span{ text-wrap:balance; }
+  .sem-clt{ display:grid; gap:8px; }
+  .sem-clt h2{ font-size:1.1875rem; font-weight:800; }
+  .sem-clt p{ color:var(--texto-suave); }
+
+  .bloco{ display:grid; gap:12px; }
+  .secao{ font-size:1.125rem; font-weight:800; }
+
+  .chip{ display:inline-flex; align-items:center; gap:6px; font-size:.75rem; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+  .chip::before{ content:""; width:7px; height:7px; border-radius:50%; background:currentColor; }
+  .chip-ok{ color:var(--ok); background:var(--ok-suave); }
+  .chip-atencao{ color:var(--atencao); background:var(--atencao-suave); }
+  .chip-critico{ color:var(--critico); background:var(--critico-suave); }
+  .chip-info{ color:var(--azul); background:var(--azul-suave); }
+
+  .areas{ list-style:none; margin:0; padding:0; display:grid; gap:10px; grid-template-columns:1fr; }
+  @media (min-width:520px){ .areas{ grid-template-columns:1fr 1fr; } }
+  .area{ background:var(--superficie); border:1px solid var(--borda); border-radius:var(--raio-sm); padding:14px; display:grid; gap:8px; }
+  .area.nivel-ok{ --cor-nivel:var(--ok); }
+  .area.nivel-atencao{ --cor-nivel:var(--atencao); }
+  .area.nivel-critico{ --cor-nivel:var(--critico); }
+  .area-topo{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .area-nome{ font-weight:700; }
+  .barra{ height:6px; border-radius:99px; background:#e8eeeb; overflow:hidden; }
+  .barra span{ display:block; height:100%; border-radius:inherit; background:var(--cor-nivel); }
+  .area-pct{ font-size:.8125rem; color:var(--texto-suave); font-variant-numeric:tabular-nums; }
+
+  .pendencias{ list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+  .btn-mais{ width:100%; }
+  .pend:focus{ outline:none; }
+  .pend{ background:var(--superficie); border:1px solid var(--borda); border-radius:var(--raio-sm); padding:16px; display:grid; gap:8px; }
+  .pend-topo{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+  .pend-num{ width:24px; height:24px; border-radius:50%; background:var(--texto); color:#fff; font-size:.75rem; font-weight:800; display:grid; place-items:center; font-variant-numeric:tabular-nums; flex:none; }
+  .pend-area{ margin-left:auto; font-size:.75rem; font-weight:600; color:var(--texto-suave); }
+  .pend h3{ font-size:1.0625rem; font-weight:800; }
+  .pend-risco{ font-size:.9375rem; color:var(--texto-suave); }
+  .pend-solucao{ font-size:.9375rem; padding-top:10px; border-top:1px dashed var(--borda); }
+  .tudo-ok{ display:flex; gap:12px; align-items:flex-start; padding:16px; border-radius:var(--raio-sm); background:var(--ok-suave); color:var(--ok); font-weight:600; }
+  .tudo-ok svg{ flex:none; margin-top:2px; }
+
+  .urgencia{ display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:var(--raio); background:var(--atencao-suave); border:1px solid var(--atencao-linha); color:#4d3300; }
+  .urgencia svg{ flex:none; margin-top:2px; color:var(--atencao); }
+  .urgencia h2{ font-size:1rem; font-weight:800; color:#6e4100; margin-bottom:4px; }
+  .urgencia p{ font-size:.9375rem; }
+
+  .cta-bloco{ display:grid; gap:12px; justify-items:center; text-align:center; padding:20px; border-radius:var(--raio); background:var(--verde-suave); border:1px solid var(--verde-linha); }
+  .cta-bloco h2{ font-size:1.1875rem; font-weight:800; }
+  .cta-nota{ font-size:.875rem; color:var(--texto-suave); }
+  .disclaimer{ font-size:.75rem; line-height:1.55; color:var(--texto-suave); text-align:center; max-width:60ch; margin:0 auto; }
+
+  /* Botão fixo de WhatsApp (só na tela de resultado, some quando o CTA principal está visível) */
+  .cta-fixo{
+    position:fixed; left:0; right:0; bottom:0; z-index:20;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.97); border-top:1px solid var(--borda);
+    box-shadow:0 -6px 20px rgba(19,34,29,.08);
+    transform:translateY(110%); transition:transform .25s ease;
+  }
+  .cta-fixo.visivel{ transform:none; }
+  .cta-fixo .btn{ display:flex; max-width:var(--max); min-height:52px; margin:0 auto; }
+
+  /* ============================ RODAPÉ ============================ */
+  .rodape{ padding:20px 16px 32px; text-align:center; font-size:.8125rem; color:var(--texto-suave); }
+  .rodape p + p{ margin-top:4px; }
+  body[data-tela="resultado"] .rodape{ padding-bottom:110px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  }
+</style>
+</head>
+<body data-tela="hero">
+
+<header class="topo">
+  <div class="topo-inner">
+    <!-- LOGO: para usar uma imagem, preencha CONFIG.empresa.logoUrl -->
+    <span class="logo" id="logo">
+      <span class="logo-marca" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 1h4v5h5v4h-5v5H6v-5H1V6h5z" fill="#fff"/></svg>
+      </span>
+      <span class="logo-texto">Ultramed<small>Ocupacional</small></span>
+    </span>
+    <span class="topo-tag">Diagnóstico gratuito</span>
+  </div>
+  <div class="progresso" id="progresso" role="progressbar" aria-label="Progresso do diagnóstico" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+    <span id="progressoBarra"></span>
+  </div>
+</header>
+
+<main class="container" id="app">
+  <noscript>
+    <div class="cartao">
+      <h1 style="font-size:1.25rem;margin-bottom:8px">Ative o JavaScript para fazer o diagnóstico</h1>
+      <p>Ou fale direto com a Ultramed Ocupacional pelo <a href="https://wa.me/5532999002140">WhatsApp</a>.</p>
+    </div>
+  </noscript>
+</main>
+
+<div class="cta-fixo" id="ctaFixo" hidden></div>
+
+<footer class="rodape">
+  <p id="rodapeEmpresa">Ultramed Ocupacional · Medicina e Segurança do Trabalho</p>
+  <p id="rodapeExtra"></p>
+</footer>
+
+<script>
+"use strict";
+/* ==================================================================================================
+   CONFIGURAÇÃO — edite por aqui (contato, rastreamento, cores, textos, perguntas e pesos)
+   ================================================================================================== */
+const CONFIG = {
+
+  /* ------- Empresa e contato ------- */
+  empresa: {
+    nome: "Ultramed Ocupacional",
+    descricao: "Medicina e Segurança do Trabalho",
+    whatsapp: "5532999002140",   // [EDITAR] 55 + DDD + número, só dígitos
+    logoUrl: "",                 // [EDITAR] ex.: "logo-ultramed.png" (mesma pasta). Vazio = logo em texto
+    cnpj: "",                    // [EDITAR] ex.: "00.000.000/0001-00" (aparece no rodapé)
+    politicaPrivacidadeUrl: "",  // [EDITAR] link da política de privacidade (recomendado para LGPD)
+  },
+
+  /* ------- Cores principais (sobrescrevem as variáveis do :root) ------- */
+  marca: {
+    verde:       "#157a5a",
+    verdeEscuro: "#0e5a43",
+    azul:        "#1d4e6b",
+  },
+
+  /* ------- Rastreamento e integrações (deixe "" para desligar) ------- */
+  rastreamento: {
+    metaPixelId:    "",        // [EDITAR: PIXEL_ID] ex.: "123456789012345"
+    eventoLead:     "Lead",    // "Lead" ou "CompleteRegistration"
+    webhookUrl:     "",        // [EDITAR: WEBHOOK_URL] ex.: "https://hook.us1.make.com/xxxx"
+    webhookFormato: "form",    // "form" (recomendado: funciona com Make/n8n sem bloqueio de CORS) ou "json"
+    gtmId:          "",        // opcional: "GTM-XXXXXXX"
+  },
+
+  /* ------- NR-01: riscos psicossociais ------- */
+  nr01: {
+    dataFiscalizacao: "2026-05-26",               // início da fiscalização com caráter punitivo
+    portaria: "Portaria MTE nº 1.419/2024",
+  },
+
+  /* ------- Classificação do score ------- */
+  faixas: [
+    { min:0,  max:40,  rotulo:"Crítico", cor:"var(--critico)",
+      frase:"Sua empresa está exposta a multas e passivos relevantes. Vale agir com prioridade." },
+    { min:41, max:70,  rotulo:"Atenção", cor:"var(--atencao)",
+      frase:"Você está no caminho, mas tem pendências importantes para resolver." },
+    { min:71, max:100, rotulo:"Bom",     cor:"var(--ok)",
+      frase:"Sua empresa está bem. Vale uma revisão para manter tudo em conformidade." },
+  ],
+
+  /* ------- Textos de abertura do resultado, conforme a situação informada no perfil ------- */
+  introPorSituacao: {
+    nada:  "Você contou que ainda não tem nada estruturado. Abaixo está, em ordem de prioridade, o caminho para regularizar.",
+    parte: "Você contou que tem parte da documentação. Veja o que já está bem e o que ainda falta.",
+    tudo:  "Você contou que já tem tudo e quer revisar. Veja se as suas respostas confirmam isso.",
+  },
+
+  /* ------- Resultado para empresas sem empregados CLT ------- */
+  semFuncionarios: {
+    titulo: "Sua empresa ainda não tem empregados CLT",
+    texto: "Por enquanto, a maior parte das obrigações de SST não se aplica. Elas começam na primeira contratação, e algumas precisam estar prontas antes do primeiro dia de trabalho.",
+    itens: [
+      { titulo:"Definir PGR e PCMSO antes da primeira admissão",
+        risco:"Os programas mostram quais riscos existem e quais exames cada função precisa. Algumas micro e pequenas empresas têm dispensa, que também precisa ser formalizada.",
+        servico:"A Ultramed avalia o seu caso e prepara os programas ou a declaração de dispensa cabível." },
+      { titulo:"Fazer o exame admissional antes do primeiro dia",
+        risco:"O ASO admissional é obrigatório antes de o funcionário começar e registra as condições de saúde na entrada.",
+        servico:"A Ultramed realiza o exame e emite o ASO com agilidade." },
+      { titulo:"Enviar os eventos de SST no eSocial desde o início",
+        risco:"Com o primeiro empregado, os eventos S-2220 (exames) e S-2240 (condições do ambiente) passam a ser exigidos.",
+        servico:"A Ultramed cuida dos eventos de SST no eSocial para você." },
+    ],
+  },
+
+  /* Quantas pendências aparecem de cara no resultado (as demais ficam em "Ver as outras") */
+  pendenciasVisiveis: 5,
+
+  /* Setores em que a exposição a agentes nocivos é comum (usado para ajustar as pendências) */
+  setoresComExposicaoComum: ["industria", "construcao", "saude", "transporte"],
+
+  /*
+    BLOCOS E PERGUNTAS
+    ------------------
+    Bloco:    { id, titulo, area (nome no semáforo; null = não pontua), mostrarSe?, perguntas }
+    Pergunta: { id, texto, ajuda?, peso, opcoes, mostrarSe?, pendencia? }
+      - texto/ajuda podem ser texto fixo ou função (perfil, respostas) => texto
+      - opcoes: { rotulo, valor, chave }  → valor 1 = em dia | 0.5 = parcial | 0 = não/não sei
+      - mostrarSe(perfil, respostas) => true/false
+      - pendencia(perfil, respostas) => null (em dia) ou
+          { titulo, risco, servico, prioridade:"alta"|"media", psicossocial?:true }
+    "perfil" traz: funcionarios ("0" | "1-19" | "20-49" | "50+"), setor, grauRisco, situacao.
+  */
+  blocos: [
+
+    /* ===================== BLOCO 0 — PERFIL (não pontua, personaliza) ===================== */
+    {
+      id:"perfil", titulo:"Perfil da empresa", area:null,
+      perguntas:[
+        { id:"funcionarios", peso:0, texto:"Quantos funcionários com carteira assinada (CLT) a empresa tem hoje?",
+          opcoes:[
+            { rotulo:"Nenhum ainda", valor:0, chave:"0" },
+            { rotulo:"1 a 19",       valor:0, chave:"1-19" },
+            { rotulo:"20 a 49",      valor:0, chave:"20-49" },
+            { rotulo:"50 ou mais",   valor:0, chave:"50+" },
+          ]},
+        { id:"setor", peso:0, texto:"Qual é o setor de atuação da empresa?",
+          opcoes:[
+            { rotulo:"Comércio",              valor:0, chave:"comercio" },
+            { rotulo:"Indústria",             valor:0, chave:"industria" },
+            { rotulo:"Construção",            valor:0, chave:"construcao" },
+            { rotulo:"Saúde",                 valor:0, chave:"saude" },
+            { rotulo:"Serviços / Escritório", valor:0, chave:"servicos" },
+            { rotulo:"Transporte",            valor:0, chave:"transporte" },
+            { rotulo:"Outro",                 valor:0, chave:"outro" },
+          ]},
+        { id:"grauRisco", peso:0, texto:"Qual é o grau de risco da atividade principal?",
+          ajuda:"Ele vem do CNAE e vai de 1 a 4. Se não souber, sem problema: escolha “Não sei”.",
+          opcoes:[
+            { rotulo:"Grau 1",  valor:0, chave:"1" },
+            { rotulo:"Grau 2",  valor:0, chave:"2" },
+            { rotulo:"Grau 3",  valor:0, chave:"3" },
+            { rotulo:"Grau 4",  valor:0, chave:"4" },
+            { rotulo:"Não sei", valor:0, chave:"nao-sei" },
+          ]},
+        { id:"situacao", peso:0, texto:"Como está a empresa hoje em saúde e segurança do trabalho?",
+          opcoes:[
+            { rotulo:"Não tenho nada",            valor:0, chave:"nada" },
+            { rotulo:"Tenho parte",               valor:0, chave:"parte" },
+            { rotulo:"Tenho tudo, quero revisar", valor:0, chave:"tudo" },
+          ]},
+      ]
+    },
+
+    /* ===================== BLOCO 1 — DOCUMENTOS-BASE (GRO / NR-01) ===================== */
+    {
+      id:"documentos", titulo:"Documentos-base (GRO / NR-01)", area:"Documentos-base",
+      mostrarSe:(perfil)=> perfil.funcionarios !== "0",
+      perguntas:[
+        { id:"pgr", peso:14, texto:"A empresa tem PGR (Programa de Gerenciamento de Riscos) atualizado?",
+          ajuda:"O PGR é o documento-base do gerenciamento de riscos exigido pela NR-01.",
+          opcoes:[
+            { rotulo:"Sim, revisado no último ano",           valor:1,   chave:"sim" },
+            { rotulo:"Tenho, mas está vencido/desatualizado", valor:0.5, chave:"vencido" },
+            { rotulo:"Não tenho",                             valor:0,   chave:"nao" },
+            { rotulo:"Não sei o que é",                       valor:0,   chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.pgr === "sim") return null;
+            return {
+              titulo: r.pgr === "vencido" ? "Atualizar o PGR (está vencido ou desatualizado)" : "Elaborar o PGR (Programa de Gerenciamento de Riscos)",
+              risco: "Sem um PGR válido, a empresa fica sujeita a autuação pela NR-01 e sem o mapa de riscos que sustenta exames, laudos e eSocial.",
+              servico: "Elaboração e atualização do PGR, em conformidade com a NR-01.",
+              prioridade: r.pgr === "vencido" ? "media" : "alta",
+            };
+          }
+        },
+        { id:"psicossocial", peso:10,
+          texto:(p, r)=> (r.pgr === "sim" || r.pgr === "vencido")
+            ? "O seu PGR já inclui os riscos psicossociais?"
+            : "A empresa já avalia os riscos psicossociais de alguma forma?",
+          ajuda:"São fatores como estresse, assédio, sobrecarga e metas abusivas. Com a atualização da NR-01, eles precisam constar no PGR.",
+          opcoes:[
+            { rotulo:"Sim",     valor:1, chave:"sim" },
+            { rotulo:"Não",     valor:0, chave:"nao" },
+            { rotulo:"Não sei", valor:0, chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.psicossocial === "sim") return null;
+            return {
+              titulo: "Incluir os riscos psicossociais no PGR (NR-01)",
+              risco: "A NR-01 passou a exigir a identificação e o controle dos riscos psicossociais no PGR. " + frasePrazoNR01(),
+              servico: "Levantamento dos riscos psicossociais e inclusão das medidas de controle no PGR.",
+              prioridade: "alta",
+              psicossocial: true,
+            };
+          }
+        },
+        { id:"pcmso", peso:14, texto:"A empresa tem PCMSO coordenado por médico do trabalho?",
+          ajuda:"PCMSO é o Programa de Controle Médico de Saúde Ocupacional (NR-07). Ele define os exames de cada função.",
+          opcoes:[
+            { rotulo:"Sim",     valor:1,   chave:"sim" },
+            { rotulo:"Vencido", valor:0.5, chave:"vencido" },
+            { rotulo:"Não",     valor:0,   chave:"nao" },
+            { rotulo:"Não sei", valor:0,   chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.pcmso === "sim") return null;
+            return {
+              titulo: r.pcmso === "vencido" ? "Renovar o PCMSO (está vencido)" : "Implantar o PCMSO com médico do trabalho",
+              risco: "Sem PCMSO válido, os exames ocupacionais ficam sem base técnica e a empresa descumpre a NR-07.",
+              servico: "PCMSO coordenado por médico do trabalho, com cronograma de exames por função.",
+              prioridade: r.pcmso === "vencido" ? "media" : "alta",
+            };
+          }
+        },
+      ]
+    },
+
+    /* ===================== BLOCO 2 — EXAMES OCUPACIONAIS (ASO) ===================== */
+    {
+      id:"exames", titulo:"Exames ocupacionais (ASO)", area:"Exames",
+      mostrarSe:(perfil)=> perfil.funcionarios !== "0",
+      perguntas:[
+        { id:"admissional", peso:9, texto:"A empresa faz o exame admissional antes de o funcionário começar?",
+          opcoes:[
+            { rotulo:"Sempre",   valor:1,   chave:"sempre" },
+            { rotulo:"Às vezes", valor:0.5, chave:"asvezes" },
+            { rotulo:"Não",      valor:0,   chave:"nao" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.admissional === "sempre") return null;
+            return {
+              titulo: "Fazer o exame admissional sempre antes do início",
+              risco: "Admitir sem ASO admissional descumpre a NR-07 e deixa a empresa sem registro da saúde do funcionário na entrada, o que pesa em eventual ação trabalhista.",
+              servico: "Exames admissionais com agendamento rápido e emissão do ASO.",
+              prioridade: r.admissional === "nao" ? "alta" : "media",
+            };
+          }
+        },
+        { id:"periodicos", peso:8, texto:"Os exames periódicos estão em dia?",
+          opcoes:[
+            { rotulo:"Sim",       valor:1,   chave:"sim" },
+            { rotulo:"Atrasados", valor:0.5, chave:"atrasados" },
+            { rotulo:"Não faço",  valor:0,   chave:"nao" },
+            { rotulo:"Não sei",   valor:0,   chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.periodicos === "sim") return null;
+            return {
+              titulo: "Colocar os exames periódicos em dia",
+              risco: "Com periódicos atrasados, a saúde da equipe fica sem acompanhamento e a empresa sai do que o PCMSO determina.",
+              servico: "Organização do calendário de periódicos e realização dos exames.",
+              prioridade: r.periodicos === "atrasados" ? "media" : "alta",
+            };
+          }
+        },
+        { id:"demissional", peso:7, texto:"A empresa faz o exame demissional no desligamento?",
+          opcoes:[
+            { rotulo:"Sim",      valor:1,   chave:"sim" },
+            { rotulo:"Às vezes", valor:0.5, chave:"asvezes" },
+            { rotulo:"Não",      valor:0,   chave:"nao" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.demissional === "sim") return null;
+            return {
+              titulo: "Fazer o exame demissional em todo desligamento",
+              risco: "Sem o demissional, a empresa fica sem prova das condições de saúde na saída e mais exposta a ações por doença ocupacional.",
+              servico: "Exame demissional com emissão do ASO para a rescisão.",
+              prioridade: "media",
+            };
+          }
+        },
+        { id:"aso", peso:6, texto:"A empresa emite e arquiva o ASO de cada exame?",
+          ajuda:"ASO é o Atestado de Saúde Ocupacional, gerado em cada exame.",
+          opcoes:[
+            { rotulo:"Sim",     valor:1, chave:"sim" },
+            { rotulo:"Não",     valor:0, chave:"nao" },
+            { rotulo:"Não sei", valor:0, chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.aso === "sim") return null;
+            return {
+              titulo: "Emitir e arquivar os ASOs corretamente",
+              risco: "ASO ausente ou desorganizado dificulta comprovar os exames na fiscalização e no eSocial.",
+              servico: "Emissão, arquivo e organização dos ASOs da sua equipe.",
+              prioridade: "media",
+            };
+          }
+        },
+      ]
+    },
+
+    /* ===================== BLOCO 3 — LAUDOS E AGENTES NOCIVOS ===================== */
+    {
+      id:"laudos", titulo:"Laudos e agentes nocivos", area:"Laudos",
+      mostrarSe:(perfil)=> perfil.funcionarios !== "0",
+      perguntas:[
+        { id:"exposicao", peso:4, texto:"Há funcionários expostos a agentes nocivos ou situações de risco?",
+          ajuda:"Por exemplo: ruído, calor, produtos químicos, poeira, agentes biológicos, eletricidade ou trabalho em altura.",
+          opcoes:[
+            { rotulo:"Sim",     valor:1, chave:"sim" },   // saber da exposição já é parte da conformidade
+            { rotulo:"Não",     valor:1, chave:"nao" },
+            { rotulo:"Não sei", valor:0, chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.exposicao === "nao-sei") return {
+              titulo: "Identificar se há exposição a agentes nocivos",
+              risco: "Sem saber se há exposição, não dá para definir corretamente laudos, EPIs, adicionais e o evento S-2240.",
+              servico: "Levantamento ambiental e classificação dos riscos da sua operação.",
+              prioridade: "media",
+            };
+            // Ajuste por setor/grau de risco: "Não" em atividades onde a exposição é comum merece confirmação técnica
+            const setorComum = CONFIG.setoresComExposicaoComum.indexOf(p.setor) >= 0;
+            const grauAlto = p.grauRisco === "3" || p.grauRisco === "4";
+            if(r.exposicao === "nao" && (setorComum || grauAlto)) return {
+              titulo: "Confirmar tecnicamente a ausência de agentes nocivos",
+              risco: (setorComum ? "No setor de " + rotuloOpcao("setor", p.setor).toLowerCase() : "Em atividades de grau de risco " + p.grauRisco)
+                + ", é comum haver ruído, poeira, produtos químicos ou agentes biológicos. Uma exposição não mapeada deixa PGR, PCMSO e eSocial incorretos.",
+              servico: "Avaliação ambiental para confirmar (ou descartar) a exposição com base técnica.",
+              prioridade: "media",
+            };
+            return null;
+          }
+        },
+        { id:"ltcat", peso:8, texto:"A empresa tem LTCAT (Laudo Técnico das Condições Ambientais do Trabalho)?",
+          ajuda:"O LTCAT embasa a aposentadoria especial e as informações do evento S-2240 no eSocial.",
+          mostrarSe:(p, r)=> r.exposicao === "sim" || r.exposicao === "nao-sei",
+          opcoes:[
+            { rotulo:"Sim",             valor:1, chave:"sim" },
+            { rotulo:"Não",             valor:0, chave:"nao" },
+            { rotulo:"Não sei o que é", valor:0, chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.ltcat === "sim") return null;
+            return {
+              titulo: "Elaborar o LTCAT",
+              risco: "Havendo exposição a agentes nocivos, sem LTCAT o evento S-2240 fica sem base técnica e pode surgir passivo previdenciário (aposentadoria especial).",
+              servico: "Elaboração do LTCAT por profissional habilitado.",
+              prioridade: "alta",
+            };
+          }
+        },
+        { id:"adicional", peso:6, texto:"A empresa paga adicional de insalubridade ou periculosidade com laudo que embase?",
+          mostrarSe:(p, r)=> r.exposicao === "sim" || r.exposicao === "nao-sei",
+          opcoes:[
+            { rotulo:"Sim, com laudo", valor:1, chave:"com-laudo" },
+            { rotulo:"Pago sem laudo", valor:0, chave:"sem-laudo" },
+            { rotulo:"Não se aplica",  valor:1, chave:"na" },
+            { rotulo:"Não sei",        valor:0, chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.adicional === "com-laudo" || r.adicional === "na") return null;
+            return {
+              titulo: "Embasar os adicionais com laudo técnico",
+              risco: r.adicional === "sem-laudo"
+                ? "Pagar adicional sem laudo (ou deixar de pagar quando é devido) gera risco trabalhista nos dois sentidos."
+                : "Sem clareza sobre insalubridade e periculosidade, pode haver pagamento indevido ou passivo trabalhista.",
+              servico: "Laudo de insalubridade e periculosidade para dar segurança à folha.",
+              prioridade: "media",
+            };
+          }
+        },
+      ]
+    },
+
+    /* ===================== BLOCO 4 — eSocial (SST) ===================== */
+    {
+      id:"esocial", titulo:"eSocial (SST)", area:"eSocial",
+      mostrarSe:(perfil)=> perfil.funcionarios !== "0",
+      perguntas:[
+        { id:"eventos", peso:9, texto:"A empresa está enviando os eventos de SST no eSocial?",
+          ajuda:"S-2210 (acidente de trabalho/CAT), S-2220 (exames) e S-2240 (agentes nocivos).",
+          opcoes:[
+            { rotulo:"Sim, em dia",            valor:1,   chave:"sim" },
+            { rotulo:"Com pendências/atrasos", valor:0.5, chave:"pendencias" },
+            { rotulo:"Não envio",              valor:0,   chave:"nao" },
+            { rotulo:"Não sei",                valor:0,   chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.eventos === "sim") return null;
+            return {
+              titulo: "Regularizar os eventos de SST no eSocial",
+              risco: "Eventos de SST ausentes ou atrasados podem gerar multa, e o governo cruza automaticamente essas informações com os demais dados da empresa.",
+              servico: "Geração e envio dos eventos S-2210, S-2220 e S-2240.",
+              prioridade: r.eventos === "pendencias" ? "media" : "alta",
+            };
+          }
+        },
+      ]
+    },
+
+    /* ===================== BLOCO 5 — COMPLEMENTOS POR PORTE ===================== */
+    {
+      id:"complementos", titulo:"Complementos por porte", area:"Complementos",
+      mostrarSe:(perfil)=> perfil.funcionarios !== "0",
+      perguntas:[
+        { id:"cipa", peso:4,
+          texto:(p)=> p.funcionarios === "1-19"
+            ? "A empresa tem um representante designado para as ações de prevenção (NR-05)?"
+            : "A empresa tem CIPA constituída ou representante designado (NR-05)?",
+          ajuda:(p)=> p.funcionarios === "1-19"
+            ? "Quando a empresa não precisa ter CIPA, a NR-05 pede que ela nomeie um representante."
+            : "A CIPA é obrigatória conforme o número de empregados e o grau de risco. Quando não é, a empresa nomeia um representante.",
+          opcoes:[
+            { rotulo:"Sim",     valor:1, chave:"sim" },
+            { rotulo:"Não",     valor:0, chave:"nao" },
+            { rotulo:"Não sei", valor:0, chave:"nao-sei" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.cipa === "sim") return null;
+            return {
+              titulo: p.funcionarios === "1-19" ? "Nomear o representante da NR-05" : "Verificar a CIPA ou nomear representante (NR-05)",
+              risco: "Conforme o porte e o grau de risco, a NR-05 exige CIPA ou um representante designado. Sem isso, a empresa fica em desconformidade.",
+              servico: "Orientação sobre a CIPA ou o representante e treinamento obrigatório.",
+              prioridade: "media",
+            };
+          }
+        },
+        { id:"treinamentos", peso:5, texto:"Os treinamentos das NRs aplicáveis são feitos e registrados?",
+          ajuda:"Por exemplo: integração de segurança, uso de EPI (NR-06), eletricidade (NR-10), altura (NR-35), conforme a atividade.",
+          opcoes:[
+            { rotulo:"Sim",     valor:1,   chave:"sim" },
+            { rotulo:"Parcial", valor:0.5, chave:"parcial" },
+            { rotulo:"Não",     valor:0,   chave:"nao" },
+          ],
+          pendencia:(p, r)=>{
+            if(r.treinamentos === "sim") return null;
+            return {
+              titulo: "Fazer e registrar os treinamentos obrigatórios",
+              risco: "Treinamentos ausentes ou sem registro deixam a empresa vulnerável em acidentes e fiscalizações.",
+              servico: "Mapeamento e realização dos treinamentos exigidos para a sua atividade.",
+              prioridade: r.treinamentos === "parcial" ? "media" : "alta",
+            };
+          }
+        },
+      ]
+    },
+  ],
+};
+
+/* ==================================================================================================
+   FIM DA CONFIGURAÇÃO — daqui para baixo é a lógica do app.
+   ================================================================================================== */
+
+/* ------- Estado da sessão (somente em memória; nada vai para localStorage) ------- */
+const estado = {
+  tela: "hero",          // "hero" | "pergunta" | "captura" | "resultado"
+  indice: 0,             // posição na lista de perguntas visíveis
+  respostas: {},         // { idPergunta: chave }
+  rascunho: {},          // valores digitados no formulário (mantidos ao voltar)
+  lead: null,            // dados confirmados do lead
+  leadId: null,
+  resultado: null,
+  inicioRastreado: false,
+  leadsRastreados: [],   // evita disparar Lead duplicado ao refazer com os mesmos dados
+};
+const origem = capturarOrigem();   // UTMs e IDs de clique da URL do anúncio
+let historicoOk = false;           // History API disponível?
+let observadorCta = null;
+
+const $app = document.getElementById("app");
+const $progresso = document.getElementById("progresso");
+const $barra = document.getElementById("progressoBarra");
+const $ctaFixo = document.getElementById("ctaFixo");
+
+/* ------- Ícones (SVG inline, sem dependências) ------- */
+const ICONE = {
+  check: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  relogio: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  whats: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.2 7.8c.3-.3.8-.3 1 .1l.8 1.6c.1.3 0 .6-.2.8l-.6.6a5.6 5.6 0 0 0 2.9 2.9l.6-.6c.2-.2.5-.3.8-.2l1.6.8c.4.2.4.7.1 1l-.7.8c-.5.5-1.3.6-2 .3a9 9 0 0 1-4.9-4.9c-.3-.7-.2-1.5.3-2z" fill="currentColor"/></svg>',
+};
+
+/* ==================================================================================================
+   UTILIDADES
+   ================================================================================================== */
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c=>({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+function getPerfil(){
+  const r = estado.respostas;
+  return { funcionarios:r.funcionarios, setor:r.setor, grauRisco:r.grauRisco, situacao:r.situacao };
+}
+function textoDe(v){ return typeof v === "function" ? v(getPerfil(), estado.respostas) : v; }
+function menosMovimento(){ return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+function gerarId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function primeiroNome(nome){ return String(nome || "").trim().split(/\s+/)[0] || ""; }
+function dataBR(iso){ const p = iso.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
+
+/* Rótulo legível de uma opção (ex.: setor "industria" → "Indústria") */
+function rotuloOpcao(idPergunta, chave){
+  for(const b of CONFIG.blocos) for(const q of b.perguntas){
+    if(q.id !== idPergunta) continue;
+    for(const o of q.opcoes) if(o.chave === chave) return o.rotulo;
+  }
+  return chave || "";
+}
+
+/* NR-01: os textos mudam sozinhos quando a data da fiscalização passa */
+function nr01Vigente(){ return Date.now() >= new Date(CONFIG.nr01.dataFiscalizacao + "T00:00:00-03:00").getTime(); }
+function frasePrazoNR01(){
+  const d = dataBR(CONFIG.nr01.dataFiscalizacao);
+  return nr01Vigente()
+    ? "Desde " + d + ", a fiscalização desse ponto deixou de ser apenas orientativa e pode resultar em autuação."
+    : "A partir de " + d + ", a fiscalização desse ponto deixa de ser apenas orientativa e passa a poder resultar em autuação.";
+}
+
+/* Origem do acesso (UTMs do anúncio, fbclid/gclid) — guardada para o webhook */
+function capturarOrigem(){
+  const o = {};
+  try{
+    const p = new URLSearchParams(location.search);
+    ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","utm_id","fbclid","gclid"].forEach(k=>{
+      const v = p.get(k); if(v) o[k] = v;
+    });
+  }catch(e){}
+  return o;
+}
+function lerCookie(nome){
+  const m = document.cookie.match(new RegExp("(?:^|; )" + nome + "=([^;]*)"));
+  return m ? decodeURIComponent(m[1]) : "";
+}
+
+/* Telefone: mantém só dígitos, remove o 55 se vier junto, limita a 11 */
+function digitosTelefone(v){
+  let d = String(v || "").replace(/\D/g, "");
+  if(d.length > 11 && d.indexOf("55") === 0) d = d.slice(2);
+  return d.slice(0, 11);
+}
+function formatarTelefone(d){
+  if(!d) return "";
+  if(d.length <= 2) return "(" + d;
+  const ddd = d.slice(0, 2), resto = d.slice(2);
+  if(resto.length <= 4) return "(" + ddd + ") " + resto;
+  if(resto.length <= 8) return "(" + ddd + ") " + resto.slice(0, 4) + "-" + resto.slice(4);
+  return "(" + ddd + ") " + resto.slice(0, 5) + "-" + resto.slice(5);
+}
+
+/* ==================================================================================================
+   PERGUNTAS VISÍVEIS (respeitam porte, setor e respostas anteriores)
+   ================================================================================================== */
+function blocosVisiveis(){
+  const perfil = getPerfil(), r = estado.respostas;
+  const lista = [];
+  CONFIG.blocos.forEach(b=>{
+    if(b.mostrarSe && !b.mostrarSe(perfil, r)) return;
+    const perguntas = b.perguntas.filter(q=> !q.mostrarSe || q.mostrarSe(perfil, r));
+    if(perguntas.length) lista.push({ bloco:b, perguntas:perguntas });
+  });
+  return lista;
+}
+function perguntasVisiveis(){
+  const lista = [];
+  blocosVisiveis().forEach((item, bi)=> item.perguntas.forEach(q=> lista.push({ q:q, bloco:item.bloco, blocoIndice:bi })));
+  return lista;
+}
+function primeiraSemResposta(){
+  const l = perguntasVisiveis();
+  for(let i = 0; i < l.length; i++) if(estado.respostas[l[i].q.id] === undefined) return i;
+  return -1;
+}
+
+/* ==================================================================================================
+   NAVEGAÇÃO (integrada ao botão "voltar" do celular/navegador)
+   ================================================================================================== */
+function irPara(tela, indice){
+  estado.tela = tela;
+  estado.indice = indice || 0;
+  if(historicoOk){
+    try{ history.pushState({ tela:tela, indice:estado.indice }, ""); }catch(e){}
+  }
+  render(true);
+}
+function voltar(){
+  if(historicoOk) { history.back(); return; }
+  if(estado.tela === "captura") return irPara("pergunta", perguntasVisiveis().length - 1);
+  if(estado.tela === "pergunta" && estado.indice > 0) return irPara("pergunta", estado.indice - 1);
+  irPara("hero");
+}
+window.addEventListener("popstate", (e)=>{
+  const s = e.state;
+  if(s && s.tela){ estado.tela = s.tela; estado.indice = s.indice || 0; }
+  else { estado.tela = "hero"; estado.indice = 0; }
+  render(true);
+});
+function avancar(){
+  const total = perguntasVisiveis().length;
+  if(estado.indice >= total - 1) irPara("captura");
+  else irPara("pergunta", estado.indice + 1);
+}
+
+/* ==================================================================================================
+   RENDERIZAÇÃO
+   ================================================================================================== */
+function render(moverFoco){
+  // Proteções: não pula perguntas sem resposta nem mostra resultado sem formulário enviado
+  if(estado.tela !== "hero"){
+    const ps = primeiraSemResposta();
+    if(ps >= 0 && (estado.tela !== "pergunta" || estado.indice > ps)){ estado.tela = "pergunta"; estado.indice = ps; }
+  }
+  if(estado.tela === "pergunta") estado.indice = Math.min(estado.indice, Math.max(0, perguntasVisiveis().length - 1));
+  if(estado.tela === "resultado" && !estado.lead) estado.tela = "captura";
+
+  document.body.setAttribute("data-tela", estado.tela);
+  if(observadorCta){ observadorCta.disconnect(); observadorCta = null; }
+  $ctaFixo.hidden = true;
+  $ctaFixo.classList.remove("visivel");
+
+  atualizarProgresso();
+  window.scrollTo(0, 0);
+
+  if(estado.tela === "hero") renderHero();
+  else if(estado.tela === "pergunta") renderPergunta();
+  else if(estado.tela === "captura") renderCaptura();
+  else renderResultado();
+
+  // Acessibilidade: leva o foco ao título da nova tela
+  if(moverFoco){
+    const alvo = $app.querySelector("[data-foco]");
+    if(alvo){ try{ alvo.focus({ preventScroll:true }); }catch(e){ alvo.focus(); } }
+  }
+}
+
+function atualizarProgresso(){
+  if(estado.tela === "hero"){ $progresso.hidden = true; return; }
+  $progresso.hidden = false;
+  const total = perguntasVisiveis().length + 1;   // +1 = formulário
+  const atual = estado.tela === "pergunta" ? estado.indice : (estado.tela === "captura" ? total - 1 : total);
+  const pct = Math.round(atual / total * 100);
+  $barra.style.width = pct + "%";
+  $progresso.setAttribute("aria-valuenow", String(pct));
+}
+
+/* ---------- TELA 1: INÍCIO ---------- */
+function renderHero(){
+  const vigente = nr01Vigente();
+  const aviso = vigente
+    ? "NR-01: riscos psicossociais já entram na fiscalização"
+    : "NR-01: riscos psicossociais na fiscalização a partir de " + dataBR(CONFIG.nr01.dataFiscalizacao);
+  const areas = CONFIG.blocos.filter(b=> b.area).map(b=> "<li>" + esc(b.area) + "</li>").join("");
+
+  $app.innerHTML = `
+    <section class="tela hero">
+      <p class="aviso-nr">${ICONE.relogio}<span>${esc(aviso)}</span></p>
+      <h1 tabindex="-1" data-foco>PGR, PCMSO, exames e eSocial: <em>o que está faltando</em> na sua empresa?</h1>
+      <p class="hero-sub">Descubra em 2 minutos se sua empresa está em dia com a saúde ocupacional e evite multas.</p>
+
+      <div class="cartao hero-cartao">
+        <p class="rotulo">Você recebe na hora</p>
+        <ul class="recebe">
+          <li>${ICONE.check}<p><strong>Score de conformidade de 0 a 100</strong><span>Uma nota clara de como a empresa está hoje.</span></p></li>
+          <li>${ICONE.check}<p><strong>Semáforo por área</strong><span>Verde, amarelo ou vermelho para cada frente de SST.</span></p></li>
+          <li>${ICONE.check}<p><strong>A lista do que falta, por prioridade</strong><span>Com o risco de cada pendência explicado em linguagem simples.</span></p></li>
+        </ul>
+        <div class="hero-acao">
+          <span class="selo">${ICONE.check} Gratuito e sem compromisso</span>
+          <button type="button" class="btn btn-primario btn-largo" id="btnComecar">Começar diagnóstico</button>
+          <p class="hero-meta">Perguntas rápidas, de múltipla escolha. Seus dados só são pedidos no final.</p>
+        </div>
+      </div>
+
+      <div class="avaliadas">
+        <p class="rotulo">O que avaliamos</p>
+        <ul class="chips">${areas}</ul>
+      </div>
+    </section>`;
+
+  document.getElementById("btnComecar").addEventListener("click", ()=>{
+    if(!estado.inicioRastreado){ estado.inicioRastreado = true; rastrear("inicio", {}); }
+    irPara("pergunta", 0);
+  });
+}
+
+/* ---------- TELA 2: PERGUNTA ---------- */
+function renderPergunta(){
+  const lista = perguntasVisiveis();
+  const item = lista[estado.indice];
+  const q = item.q;
+  const totalBlocos = blocosVisiveis().length;
+  const resposta = estado.respostas[q.id];
+  const ajuda = textoDe(q.ajuda);
+  const ultima = estado.indice === lista.length - 1;
+
+  $app.innerHTML = `
+    <section class="tela">
+      <form class="cartao pergunta" id="formPergunta" novalidate>
+        <p class="etapa"><span>Etapa ${item.blocoIndice + 1} de ${totalBlocos}</span> · ${esc(item.bloco.titulo)}</p>
+        <div>
+          <h1 class="pergunta-titulo" id="tituloPergunta" tabindex="-1" data-foco>${esc(textoDe(q.texto))}</h1>
+          ${ajuda ? `<p class="ajuda" id="ajudaPergunta">${esc(ajuda)}</p>` : ""}
+        </div>
+        <div class="opcoes" role="radiogroup" aria-labelledby="tituloPergunta" ${ajuda ? 'aria-describedby="ajudaPergunta"' : ""}>
+          ${q.opcoes.map(op=> `
+            <label class="opcao${resposta === op.chave ? " marcada" : ""}">
+              <input type="radio" name="resposta" value="${esc(op.chave)}"${resposta === op.chave ? " checked" : ""}>
+              <span>${esc(op.rotulo)}</span>
+            </label>`).join("")}
+        </div>
+        <div class="nav">
+          <button type="button" class="btn btn-voltar" id="btnVoltar"><span aria-hidden="true">←</span><span class="sr-only">Voltar</span></button>
+          <button type="submit" class="btn btn-primario" id="btnProxima"${resposta === undefined ? " disabled" : ""}>${ultima ? "Continuar" : "Próxima"}</button>
+        </div>
+      </form>
+    </section>`;
+
+  const form = document.getElementById("formPergunta");
+  const grupo = form.querySelector(".opcoes");
+  const btnProxima = document.getElementById("btnProxima");
+
+  // Toque/clique avança sozinho; pelo teclado (setas) só seleciona, e Enter avança.
+  let viaPonteiro = false;
+  ["pointerdown", "touchstart", "mousedown"].forEach(ev=> grupo.addEventListener(ev, ()=>{ viaPonteiro = true; }, { passive:true }));
+  grupo.addEventListener("keydown", ()=>{ viaPonteiro = false; });
+
+  function selecionar(input){
+    estado.respostas[q.id] = input.value;
+    grupo.querySelectorAll(".opcao").forEach(l=> l.classList.toggle("marcada", l.contains(input)));
+    btnProxima.disabled = false;
+  }
+  grupo.querySelectorAll("input").forEach(input=>{
+    input.addEventListener("change", ()=> selecionar(input));
+    input.addEventListener("click", ()=>{
+      selecionar(input);
+      if(!viaPonteiro) return;
+      viaPonteiro = false;
+      const passo = estado.indice;
+      setTimeout(()=>{ if(estado.tela === "pergunta" && estado.indice === passo) avancar(); }, menosMovimento() ? 0 : 260);
+    });
+  });
+
+  form.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    if(estado.respostas[q.id] !== undefined) avancar();
+  });
+  document.getElementById("btnVoltar").addEventListener("click", voltar);
+}
+
+/* ---------- TELA 3: CAPTURA DO LEAD ---------- */
+function renderCaptura(){
+  const r = estado.rascunho;
+  const pol = CONFIG.empresa.politicaPrivacidadeUrl;
+  const linkPolitica = pol ? ` Veja a <a href="${esc(pol)}" target="_blank" rel="noopener">política de privacidade</a>.` : "";
+
+  $app.innerHTML = `
+    <section class="tela">
+      <form class="cartao captura" id="formCaptura" novalidate>
+        <div>
+          <p class="etapa">Última etapa</p>
+          <h1 class="captura-titulo" tabindex="-1" data-foco>Para quem enviamos o relatório?</h1>
+          <p class="captura-sub">Seu diagnóstico está pronto. Informe seus dados para ver o resultado personalizado.</p>
+        </div>
+
+        <div class="campos">
+          <div class="campo">
+            <label for="nome">Seu nome</label>
+            <input id="nome" name="nome" type="text" autocomplete="name" autocapitalize="words" required aria-describedby="erro-nome" value="${esc(r.nome)}">
+            <p class="erro" id="erro-nome"></p>
+          </div>
+          <div class="campo">
+            <label for="empresa">Nome da empresa</label>
+            <input id="empresa" name="empresa" type="text" autocomplete="organization" required aria-describedby="erro-empresa" value="${esc(r.empresa)}">
+            <p class="erro" id="erro-empresa"></p>
+          </div>
+          <div class="campo">
+            <label for="whatsapp">WhatsApp com DDD</label>
+            <input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(32) 99999-9999" required aria-describedby="erro-whatsapp" value="${esc(r.whatsapp)}">
+            <p class="erro" id="erro-whatsapp"></p>
+          </div>
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="voce@empresa.com.br" required aria-describedby="erro-email" value="${esc(r.email)}">
+            <p class="erro" id="erro-email"></p>
+          </div>
+          <!-- Campo-armadilha anti-robô: pessoas não veem nem preenchem -->
+          <div class="armadilha" aria-hidden="true">
+            <label for="site">Site</label><input id="site" name="site" type="text" tabindex="-1" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="consentimento-wrap">
+          <label class="consentimento" id="caixaConsentimento">
+            <input type="checkbox" id="consentimento" name="consentimento" required aria-describedby="erro-consentimento"${r.consentimento ? " checked" : ""}>
+            <span>Concordo que a <strong>${esc(CONFIG.empresa.nome)}</strong> use meus dados (nome, empresa, WhatsApp e e-mail) para me enviar este diagnóstico e entrar em contato sobre serviços de saúde e segurança do trabalho, conforme a LGPD (Lei nº 13.709/2018). Posso pedir a exclusão a qualquer momento.${linkPolitica}</span>
+          </label>
+          <p class="erro" id="erro-consentimento"></p>
+        </div>
+
+        <div class="nav">
+          <button type="button" class="btn btn-voltar" id="btnVoltar"><span aria-hidden="true">←</span><span class="sr-only">Voltar</span></button>
+          <button type="submit" class="btn btn-primario" id="btnVer">Ver meu diagnóstico</button>
+        </div>
+        <p class="nota-privacidade">Usamos seus dados apenas para este diagnóstico e para o contato da ${esc(CONFIG.empresa.nome)}.</p>
+      </form>
+    </section>`;
+
+  const form = document.getElementById("formCaptura");
+  const tel = document.getElementById("whatsapp");
+
+  // Guarda o que foi digitado (para não perder ao voltar)
+  function guardar(e){
+    const t = e.target;
+    if(t.id === "whatsapp" && e.type === "input" && !(e.inputType && e.inputType.indexOf("delete") === 0)){
+      t.value = formatarTelefone(digitosTelefone(t.value));
+    }
+    if(t.name && t.name !== "site") estado.rascunho[t.name] = t.type === "checkbox" ? t.checked : t.value;
+  }
+  form.addEventListener("input", guardar);
+  form.addEventListener("change", guardar);
+  tel.addEventListener("blur", ()=>{ tel.value = formatarTelefone(digitosTelefone(tel.value)); estado.rascunho.whatsapp = tel.value; });
+
+  document.getElementById("btnVoltar").addEventListener("click", voltar);
+  form.addEventListener("submit", (e)=>{ e.preventDefault(); enviarCaptura(form); });
+}
+
+function validarCaptura(form){
+  const v = {
+    nome: form.nome.value.trim(),
+    empresa: form.empresa.value.trim(),
+    telefone: digitosTelefone(form.whatsapp.value),
+    email: form.email.value.trim().toLowerCase(),
+    consentimento: form.consentimento.checked,
+  };
+  const erros = {};
+  if(v.nome.length < 2) erros.nome = "Informe seu nome.";
+  if(v.empresa.length < 2) erros.empresa = "Informe o nome da empresa.";
+  if(!(v.telefone.length === 10 || v.telefone.length === 11) || v.telefone[0] === "0")
+    erros.whatsapp = "Digite o WhatsApp com DDD, por exemplo (32) 99999-9999.";
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) erros.email = "Digite um e-mail válido, por exemplo nome@empresa.com.br.";
+  if(!v.consentimento) erros.consentimento = "Para ver o resultado, marque a autorização de uso dos dados.";
+
+  ["nome", "empresa", "whatsapp", "email", "consentimento"].forEach(campo=>{
+    const msg = erros[campo] || "";
+    document.getElementById("erro-" + campo).textContent = msg;
+    form[campo].setAttribute("aria-invalid", msg ? "true" : "false");
+  });
+  document.getElementById("caixaConsentimento").classList.toggle("invalido", !!erros.consentimento);
+
+  const primeiro = ["nome", "empresa", "whatsapp", "email", "consentimento"].filter(c=> erros[c])[0];
+  if(primeiro){ form[primeiro].focus(); return null; }
+  return v;
+}
+
+function enviarCaptura(form){
+  const v = validarCaptura(form);
+  if(!v) return;
+  const btn = document.getElementById("btnVer");
+  btn.disabled = true;
+  btn.textContent = "Gerando diagnóstico…";
+
+  estado.lead = {
+    nome: v.nome, empresa: v.empresa, telefone: v.telefone, email: v.email,
+    consentimentoEm: new Date().toISOString(),
+    robo: !!form.site.value,
+  };
+  estado.leadId = gerarId();
+  estado.resultado = calcularResultado();
+
+  // >>> Integrações: cada uma isolada, nenhuma bloqueia a navegação <<<
+  const chave = v.email + "|" + v.telefone;
+  const repetido = estado.leadsRastreados.indexOf(chave) >= 0;
+  if(!repetido){ estado.leadsRastreados.push(chave); rastrear("lead", dadosDoEvento()); }
+  enviarWebhook(repetido ? "diagnostico_refeito" : "lead");
+
+  irPara("resultado");
+}
+
+/* ==================================================================================================
+   CÁLCULO DO DIAGNÓSTICO
+   ================================================================================================== */
+function calcularResultado(){
+  const perfil = getPerfil(), r = estado.respostas;
+  const lista = perguntasVisiveis();
+  const respostas = {};
+  lista.forEach(it=>{ if(r[it.q.id] !== undefined) respostas[it.q.id] = r[it.q.id]; });
+
+  if(perfil.funcionarios === "0"){
+    return {
+      semFuncionarios:true, score:null, faixa:null, areas:[], temPsicossocial:false, perfil:perfil, respostas:respostas,
+      pendencias: CONFIG.semFuncionarios.itens.map(p=> Object.assign({ prioridade:"preparo", area:"Antes de contratar" }, p)),
+    };
+  }
+
+  let somaPeso = 0, somaGanho = 0;
+  const mapa = {}, ordemAreas = [], pendencias = [];
+  lista.forEach(it=>{
+    const q = it.q, area = it.bloco.area;
+    const op = q.opcoes.filter(o=> o.chave === r[q.id])[0];
+    const valor = op ? op.valor : 0;
+    if(q.peso > 0){
+      somaPeso += q.peso;
+      somaGanho += q.peso * valor;
+      if(area){
+        if(!mapa[area]){ mapa[area] = { peso:0, ganho:0 }; ordemAreas.push(area); }
+        mapa[area].peso += q.peso;
+        mapa[area].ganho += q.peso * valor;
+      }
+    }
+    if(typeof q.pendencia === "function"){
+      const p = q.pendencia(perfil, r);
+      if(p) pendencias.push(Object.assign({ area:area, idPergunta:q.id, ordem:pendencias.length }, p));
+    }
+  });
+
+  const score = somaPeso > 0 ? Math.round(somaGanho / somaPeso * 100) : 0;
+  const faixa = CONFIG.faixas.filter(f=> score >= f.min && score <= f.max)[0] || CONFIG.faixas[0];
+
+  // Ordem: psicossociais, PGR e PCMSO no topo; depois prioridade alta; depois média
+  const peso = (p)=> p.psicossocial ? 0 : p.idPergunta === "pgr" ? 1 : p.idPergunta === "pcmso" ? 2 : p.prioridade === "alta" ? 3 : 4;
+  pendencias.sort((a, b)=> (peso(a) - peso(b)) || (a.ordem - b.ordem));
+
+  // Semáforo: percentual da área, mas nunca verde se houver pendência de prioridade alta nela
+  const areas = ordemAreas.map(nome=>{
+    const a = mapa[nome];
+    const pct = Math.round(a.ganho / a.peso * 100);
+    let nivel = pct >= 71 ? "ok" : (pct >= 41 ? "atencao" : "critico");
+    if(nivel === "ok" && pendencias.some(p=> p.area === nome && p.prioridade === "alta")) nivel = "atencao";
+    return { nome:nome, pct:pct, nivel:nivel };
+  });
+
+  return {
+    semFuncionarios:false, score:score, faixa:faixa, areas:areas, pendencias:pendencias,
+    temPsicossocial: pendencias.some(p=> p.psicossocial), perfil:perfil, respostas:respostas,
+  };
+}
+
+/* ---------- TELA 4: RESULTADO ---------- */
+const NIVEL = {
+  ok:      { rotulo:"Em dia",   chip:"chip-ok" },
+  atencao: { rotulo:"Atenção",  chip:"chip-atencao" },
+  critico: { rotulo:"Pendente", chip:"chip-critico" },
+};
+
+function renderResultado(){
+  const R = estado.resultado = calcularResultado();
+  const L = estado.lead;
+  const nome = primeiroNome(L.nome);
+  const linkWhats = linkWhatsApp(R);
+  const altas = R.pendencias.filter(p=> p.prioridade === "alta").length;
+
+  // 2) Score (ou aviso para empresas sem CLT)
+  const placar = R.semFuncionarios ? `
+    <div class="cartao sem-clt">
+      <span class="chip chip-info">Sem empregados CLT</span>
+      <h2>${esc(CONFIG.semFuncionarios.titulo)}</h2>
+      <p>${esc(CONFIG.semFuncionarios.texto)}</p>
+    </div>` : `
+    <div class="cartao placar" style="--cor-faixa:${R.faixa.cor}">
+      <div class="gauge" role="img" aria-label="Score de conformidade: ${R.score} de 100, classificação ${esc(R.faixa.rotulo)}">
+        ${gaugeSvg(R.score)}
+        <p class="placar-num" aria-hidden="true"><span id="placarNum">${menosMovimento() ? R.score : 0}</span><small>/100</small></p>
+      </div>
+      <span class="faixa">${esc(R.faixa.rotulo)}</span>
+      <p class="faixa-frase">${esc(R.faixa.frase)}</p>
+      <p class="placar-resumo">${R.pendencias.length === 0 ? "Nenhuma pendência encontrada"
+        : R.pendencias.length + (R.pendencias.length === 1 ? " pendência encontrada" : " pendências encontradas")
+          + (altas ? " · " + altas + " de prioridade alta" : "")}</p>
+    </div>`;
+
+  // 3) Semáforo por área
+  const semaforo = R.semFuncionarios ? "" : `
+    <section class="bloco" aria-labelledby="tSemaforo">
+      <h2 class="secao" id="tSemaforo">Semáforo por área</h2>
+      <ul class="areas">
+        ${R.areas.map(a=> `
+          <li class="area nivel-${a.nivel}">
+            <div class="area-topo"><span class="area-nome">${esc(a.nome)}</span><span class="chip ${NIVEL[a.nivel].chip}">${NIVEL[a.nivel].rotulo}</span></div>
+            <div class="barra" aria-hidden="true"><span style="width:${a.pct}%"></span></div>
+            <span class="area-pct">${a.pct}% em conformidade</span>
+          </li>`).join("")}
+      </ul>
+    </section>`;
+
+  // 4) Pendências priorizadas
+  const chipPend = (p)=> p.prioridade === "alta" ? '<span class="chip chip-critico">Prioridade alta</span>'
+    : p.prioridade === "media" ? '<span class="chip chip-atencao">Atenção</span>'
+    : '<span class="chip chip-info">Antes de contratar</span>';
+  const LIMITE = CONFIG.pendenciasVisiveis || 5;   // as demais ficam atrás do botão "Ver as outras"
+  const ocultas = Math.max(0, R.pendencias.length - LIMITE);
+  const listaPend = R.pendencias.length === 0
+    ? `<div class="tudo-ok">${ICONE.check}<p>Não encontramos pendências relevantes nas suas respostas. Uma revisão periódica ajuda a manter tudo em dia.</p></div>`
+    : `<ol class="pendencias" id="listaPendencias">
+        ${R.pendencias.map((p, i)=> `
+          <li class="pend"${i >= LIMITE ? " hidden" : ""}>
+            <div class="pend-topo">
+              <span class="pend-num" aria-hidden="true">${i + 1}</span>
+              ${chipPend(p)}
+              ${p.area && !R.semFuncionarios ? `<span class="pend-area">${esc(p.area)}</span>` : ""}
+            </div>
+            <h3>${esc(p.titulo)}</h3>
+            <p class="pend-risco">${esc(p.risco)}</p>
+            <p class="pend-solucao"><strong>Como a Ultramed resolve:</strong> ${esc(p.servico)}</p>
+          </li>`).join("")}
+      </ol>
+      ${ocultas ? `<button type="button" class="btn btn-voltar btn-mais" id="btnMais" aria-controls="listaPendencias" aria-expanded="false">Ver ${ocultas === 1 ? "a outra pendência" : "as outras " + ocultas + " pendências"}</button>` : ""}`;
+
+  // 5) Urgência NR-01 (só com pendência psicossocial)
+  const urgencia = !R.temPsicossocial ? "" : `
+    <aside class="urgencia" aria-labelledby="tUrgencia">
+      ${ICONE.relogio}
+      <div>
+        <h2 id="tUrgencia">${nr01Vigente()
+          ? "Riscos psicossociais: a fiscalização já está valendo"
+          : "Riscos psicossociais: fiscalização a partir de " + dataBR(CONFIG.nr01.dataFiscalizacao)}</h2>
+        <p>Com a atualização da NR-01 (${esc(CONFIG.nr01.portaria)}), toda empresa com empregados CLT precisa identificar e controlar no PGR os fatores de risco psicossocial, como estresse, assédio e sobrecarga. ${esc(frasePrazoNR01())}</p>
+      </div>
+    </aside>`;
+
+  $app.innerHTML = `
+    <section class="tela resultado">
+      <header class="res-cabecalho">
+        <p class="rotulo">Diagnóstico de saúde ocupacional</p>
+        <h1 tabindex="-1" data-foco>Olá${nome ? ", " + esc(nome) : ""}! Aqui está o resultado da empresa ${esc(L.empresa)}.</h1>
+        ${R.perfil.situacao && CONFIG.introPorSituacao[R.perfil.situacao] && !R.semFuncionarios
+          ? `<p class="res-intro">${esc(CONFIG.introPorSituacao[R.perfil.situacao])}</p>` : ""}
+      </header>
+
+      ${placar}
+      ${semaforo}
+
+      <section class="bloco" aria-labelledby="tPend">
+        <h2 class="secao" id="tPend">${R.semFuncionarios ? "Para contratar já em dia" : "O que falta para você ficar em dia"}</h2>
+        ${listaPend}
+      </section>
+
+      ${urgencia}
+
+      <div class="cta-bloco" id="ctaPrincipal">
+        <h2>${R.pendencias.length ? "Quer resolver isso sem dor de cabeça?" : "Quer manter tudo em dia?"}</h2>
+        <a class="btn btn-whats" href="${esc(linkWhats)}" target="_blank" rel="noopener" data-whats>${ICONE.whats}<span>Falar com a Ultramed no WhatsApp</span></a>
+        <p class="cta-nota">A mensagem já vai com o resumo do seu diagnóstico.</p>
+        <button type="button" class="btn btn-texto" id="btnRefazer">Refazer diagnóstico</button>
+      </div>
+
+      <p class="disclaimer">Este é um diagnóstico preliminar e orientativo, gerado a partir das suas respostas. Não substitui uma avaliação técnica presencial nem constitui consultoria jurídica. Para um parecer preciso, fale com a equipe da ${esc(CONFIG.empresa.nome)}.</p>
+    </section>`;
+
+  // Botão fixo de WhatsApp (aparece enquanto o CTA principal está fora da tela)
+  $ctaFixo.innerHTML = `<a class="btn btn-whats" href="${esc(linkWhats)}" target="_blank" rel="noopener" data-whats tabindex="-1">${ICONE.whats}<span>Falar no WhatsApp</span></a>`;
+  if("IntersectionObserver" in window){
+    $ctaFixo.setAttribute("aria-hidden", "true");
+    $ctaFixo.hidden = false;
+    const link = $ctaFixo.querySelector("a");
+    observadorCta = new IntersectionObserver((entradas)=>{
+      const mostrar = !entradas[0].isIntersecting;
+      $ctaFixo.classList.toggle("visivel", mostrar);
+      $ctaFixo.setAttribute("aria-hidden", mostrar ? "false" : "true");
+      link.tabIndex = mostrar ? 0 : -1;
+    });
+    observadorCta.observe(document.getElementById("ctaPrincipal"));
+  }
+
+  document.querySelectorAll("[data-whats]").forEach(a=> a.addEventListener("click", ()=>{
+    rastrear("whatsapp", dadosDoEvento());
+    enviarWebhook("whatsapp_click");
+  }));
+
+  const btnMais = document.getElementById("btnMais");
+  if(btnMais) btnMais.addEventListener("click", ()=>{
+    const ocultos = document.querySelectorAll("#listaPendencias .pend[hidden]");
+    ocultos.forEach(li=> li.hidden = false);
+    btnMais.remove();
+    if(ocultos[0]){ ocultos[0].setAttribute("tabindex", "-1"); ocultos[0].focus(); }
+  });
+
+  document.getElementById("btnRefazer").addEventListener("click", ()=>{
+    estado.respostas = {};
+    estado.resultado = null;
+    estado.lead = null;
+    irPara("pergunta", 0);
+  });
+
+  if(!R.semFuncionarios) animarGauge(R.score);
+}
+
+/* Medidor semicircular: trilho + arco proporcional ao score */
+const COMPRIMENTO_ARCO = Math.PI * 86;
+function gaugeSvg(score){
+  const offset = menosMovimento() ? COMPRIMENTO_ARCO * (1 - score / 100) : COMPRIMENTO_ARCO;
+  return `
+    <svg viewBox="0 0 200 110" aria-hidden="true" focusable="false">
+      <path class="gauge-trilho" d="M14 100 A86 86 0 0 1 186 100"/>
+      ${score > 0 ? `<path class="gauge-valor" id="gaugeValor" d="M14 100 A86 86 0 0 1 186 100"
+        style="stroke-dasharray:${COMPRIMENTO_ARCO.toFixed(2)};stroke-dashoffset:${offset.toFixed(2)}"/>` : ""}
+    </svg>`;
+}
+function animarGauge(score){
+  if(menosMovimento()) return;
+  const arco = document.getElementById("gaugeValor");
+  const num = document.getElementById("placarNum");
+  requestAnimationFrame(()=> requestAnimationFrame(()=>{
+    if(arco) arco.style.strokeDashoffset = (COMPRIMENTO_ARCO * (1 - score / 100)).toFixed(2);
+  }));
+  const inicio = performance.now(), duracao = 1100;
+  (function passo(t){
+    const p = Math.min(1, (t - inicio) / duracao);
+    const suave = 1 - Math.pow(1 - p, 3);
+    if(num) num.textContent = Math.round(suave * score);
+    if(p < 1) requestAnimationFrame(passo);
+  })(inicio);
+}
+
+/* Mensagem pré-preenchida do WhatsApp com o resumo do diagnóstico */
+function mensagemWhatsApp(R){
+  const L = estado.lead || {};
+  const nome = primeiroNome(L.nome);
+  const apresentacao = "Olá! " + (nome ? "Sou " + nome + ", da empresa " + L.empresa + ". " : "");
+  if(R.semFuncionarios){
+    return apresentacao + "Fiz o diagnóstico de saúde ocupacional: ainda não temos funcionários CLT e quero me preparar para as primeiras contratações. Pode me ajudar?";
+  }
+  const top = R.pendencias.slice(0, 3).map(p=> "• " + p.titulo).join("\n");
+  return apresentacao + "Fiz o diagnóstico de saúde ocupacional.\n"
+    + "Meu resultado foi " + R.score + "/100 (" + R.faixa.rotulo + ").\n"
+    + (top ? "Principais pendências:\n" + top + "\n" : "Não apareceram pendências relevantes.\n")
+    + "Quero uma proposta da " + CONFIG.empresa.nome + ".";
+}
+function linkWhatsApp(R){
+  return "https://wa.me/" + String(CONFIG.empresa.whatsapp).replace(/\D/g, "") + "?text=" + encodeURIComponent(mensagemWhatsApp(R));
+}
+
+/* ==================================================================================================
+   INTEGRAÇÕES — cada uma isolada e fácil de ligar/desligar pelo CONFIG.rastreamento
+   ================================================================================================== */
+
+/* Dados comuns dos eventos (sem dados pessoais — seguros para Pixel e GTM) */
+function dadosDoEvento(){
+  const R = estado.resultado;
+  return {
+    lead_id: estado.leadId,
+    score: R && !R.semFuncionarios ? R.score : null,
+    classificacao: R ? (R.semFuncionarios ? "Sem empregados CLT" : R.faixa.rotulo) : "",
+    pendencias: R ? R.pendencias.length : 0,
+  };
+}
+
+/* ---- Meta Pixel + Google Tag Manager: inicialização (PageView) ---- */
+function iniciarRastreamento(){
+  const cfg = CONFIG.rastreamento;
+  window.dataLayer = window.dataLayer || [];
+
+  if(cfg.gtmId){
+    window.dataLayer.push({ "gtm.start": Date.now(), event:"gtm.js" });
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(cfg.gtmId);
+    document.head.appendChild(s);
+  }
+
+  if(cfg.metaPixelId){
+    /* Snippet oficial do Meta Pixel */
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    try{ fbq("init", cfg.metaPixelId); fbq("track", "PageView"); }catch(e){}
+  }
+}
+
+/* ---- Eventos do funil: inicio | lead | whatsapp ---- */
+function rastrear(evento, dados){
+  try{ window.dataLayer.push(Object.assign({ event:"diagnostico_" + evento }, dados)); }catch(e){}
+
+  if(!CONFIG.rastreamento.metaPixelId || typeof window.fbq !== "function") return;
+  try{
+    if(evento === "inicio"){
+      fbq("trackCustom", "InicioDiagnostico");
+    } else if(evento === "lead"){
+      // eventID permite deduplicar com a API de Conversões (o mesmo ID vai no webhook)
+      fbq("track", CONFIG.rastreamento.eventoLead || "Lead",
+        { content_name:"Diagnóstico SST", content_category:dados.classificacao, diagnostico_score:dados.score },
+        { eventID:"lead_" + dados.lead_id });
+    } else if(evento === "whatsapp"){
+      fbq("track", "Contact", { content_name:"Diagnóstico SST" }, { eventID:"contato_" + dados.lead_id });
+    }
+  }catch(e){}
+}
+
+/* ---- Webhook / CRM (opcional). Nunca bloqueia nem quebra a experiência. ---- */
+function enviarWebhook(evento){
+  const url = CONFIG.rastreamento.webhookUrl;
+  const L = estado.lead, R = estado.resultado;
+  if(!url || !L || !R || L.robo) return;
+
+  const fbc = lerCookie("_fbc") || (origem.fbclid ? "fb.1." + Date.now() + "." + origem.fbclid : "");
+  const dados = {
+    evento: evento,                                   // lead | diagnostico_refeito | whatsapp_click
+    lead_id: estado.leadId,
+    meta_event_id: "lead_" + estado.leadId,           // mesmo ID do evento Lead do Pixel
+    data_hora: new Date().toISOString(),
+    nome: L.nome,
+    empresa: L.empresa,
+    whatsapp: "55" + L.telefone,
+    email: L.email,
+    consentimento_lgpd: "sim",
+    consentimento_data: L.consentimentoEm,
+    score: R.semFuncionarios ? "" : R.score,
+    classificacao: R.semFuncionarios ? "Sem empregados CLT" : R.faixa.rotulo,
+    qtd_pendencias: R.pendencias.length,
+    pendencias_alta: R.pendencias.filter(p=> p.prioridade === "alta").length,
+    pendencia_nr01_psicossocial: R.temPsicossocial ? "sim" : "nao",
+    pendencias: R.pendencias.map(p=> p.titulo).join(" | "),
+    funcionarios: rotuloOpcao("funcionarios", R.perfil.funcionarios),
+    setor: rotuloOpcao("setor", R.perfil.setor),
+    grau_risco: rotuloOpcao("grauRisco", R.perfil.grauRisco),
+    situacao: rotuloOpcao("situacao", R.perfil.situacao),
+    utm_source: origem.utm_source || "", utm_medium: origem.utm_medium || "",
+    utm_campaign: origem.utm_campaign || "", utm_content: origem.utm_content || "",
+    utm_term: origem.utm_term || "", utm_id: origem.utm_id || "",
+    fbclid: origem.fbclid || "", gclid: origem.gclid || "",
+    fbp: lerCookie("_fbp"), fbc: fbc,
+    pagina: location.href.split("#")[0],
+    referrer: document.referrer,
+    user_agent: navigator.userAgent,
+  };
+  // Detalhe completo (respostas e semáforo) em JSON, para quem quiser processar no Make/n8n
+  dados.detalhes_json = JSON.stringify({
+    respostas: R.respostas,
+    areas: R.areas,
+    pendencias: R.pendencias.map(p=> ({ titulo:p.titulo, prioridade:p.prioridade, area:p.area })),
+  });
+
+  try{
+    if(CONFIG.rastreamento.webhookFormato === "json"){
+      // Exige que o destino aceite CORS (ex.: Make aceita; alguns n8n precisam de configuração)
+      fetch(url, { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(dados), keepalive:true }).catch(()=>{});
+      return;
+    }
+    // Formulário (application/x-www-form-urlencoded): não sofre bloqueio de CORS
+    const corpo = new URLSearchParams();
+    Object.keys(dados).forEach(k=> corpo.append(k, dados[k] == null ? "" : String(dados[k])));
+    const enviado = navigator.sendBeacon ? navigator.sendBeacon(url, corpo) : false;
+    if(!enviado && window.fetch) fetch(url, { method:"POST", mode:"no-cors", body:corpo, keepalive:true }).catch(()=>{});
+  }catch(e){ /* silencioso: o lead segue para o resultado e para o WhatsApp */ }
+}
+
+/* ==================================================================================================
+   INICIALIZAÇÃO
+   ================================================================================================== */
+function aplicarMarca(){
+  const m = CONFIG.marca, raiz = document.documentElement.style;
+  if(m.verde) raiz.setProperty("--verde", m.verde);
+  if(m.verdeEscuro) raiz.setProperty("--verde-escuro", m.verdeEscuro);
+  if(m.azul) raiz.setProperty("--azul", m.azul);
+}
+function montarCabecalhoERodape(){
+  const E = CONFIG.empresa;
+  if(E.logoUrl){
+    document.getElementById("logo").innerHTML = '<img src="' + esc(E.logoUrl) + '" alt="' + esc(E.nome) + '">';
+  }
+  document.getElementById("rodapeEmpresa").textContent = E.nome + " · " + E.descricao;
+  const extra = [];
+  if(E.cnpj) extra.push("CNPJ " + esc(E.cnpj));
+  if(E.politicaPrivacidadeUrl) extra.push('<a href="' + esc(E.politicaPrivacidadeUrl) + '" target="_blank" rel="noopener">Política de privacidade</a>');
+  document.getElementById("rodapeExtra").innerHTML = extra.join(" · ");
+}
+
+aplicarMarca();
+montarCabecalhoERodape();
+iniciarRastreamento();
+try{ history.replaceState({ tela:"hero", indice:0 }, ""); historicoOk = true; }catch(e){ historicoOk = false; }
+render(false);
+</script>
+</body>
+</html>
