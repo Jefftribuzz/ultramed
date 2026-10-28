@@ -12,8 +12,9 @@ Página de captação para campanhas de tráfego pago. O visitante responde perg
 |---|---|
 | `index.html` | O diagnóstico (HTML, CSS e JavaScript em um único arquivo, sem dependências) |
 | `politica-de-privacidade.html` | Política de privacidade (LGPD), com link no formulário e no rodapé |
+| `logo-ultramed.png` | Logo da Ultramed em versão horizontal (símbolo + nome), usada no cabeçalho das duas páginas |
 
-Os dois arquivos precisam ser publicados **juntos, na mesma pasta**.
+Os três arquivos precisam ser publicados **juntos, na mesma pasta**. Se a logo faltar, o cabeçalho mostra a logo em texto.
 
 ---
 
@@ -23,7 +24,7 @@ O site fica hospedado no **Netlify** (grátis), e o Registro.br só aponta o sub
 
 ### Passo 1 — Netlify
 1. Crie uma conta em https://app.netlify.com (pode entrar com o Google).
-2. Abra https://app.netlify.com/drop e **arraste a pasta** que contém `index.html` e `politica-de-privacidade.html`.
+2. Abra https://app.netlify.com/drop e **arraste a pasta** que contém `index.html`, `politica-de-privacidade.html` e `logo-ultramed.png`.
 3. O Netlify cria o site com um endereço do tipo `nome-aleatorio-123.netlify.app`. Abra esse endereço e confira se a página funciona.
 4. (Opcional) Em **Site configuration → Change site name**, troque para algo como `ultramed-diagnostico`. O endereço passa a ser `ultramed-diagnostico.netlify.app`.
 5. Em **Domain management → Add a domain**, digite `ultramed.tribuzz.com.br` e confirme. Se o Netlify perguntar sobre DNS, escolha configurar em um provedor externo.
@@ -106,7 +107,8 @@ Tudo fica no objeto `CONFIG`, no início do `<script>` do `index.html`:
 - **Pendências**: cada pergunta tem uma função `pendencia` com título, risco, serviço da Ultramed e prioridade.
 - **Quando cada pergunta aparece**: `mostrarSe`. Por exemplo, o LTCAT só aparece quando há exposição, e empresas sem CLT vão direto ao formulário.
 - **Faixas do score**: `CONFIG.faixas` (Crítico 0–40, Atenção 41–70, Bom 71–100).
-- **Cores**: `CONFIG.marca`. As cores do semáforo ficam no `:root` do `<style>`.
+- **Cores**: `CONFIG.marca` (hoje com os verdes da logo: `#00853b` e `#205830`). As cores do semáforo ficam no `:root` do `<style>`.
+- **Logo**: `CONFIG.empresa.logoUrl` (arquivo `logo-ultramed.png`, na mesma pasta).
 - **Prazo da NR-01**: `CONFIG.nr01.dataFiscalizacao`. Os textos passam sozinhos de "a partir de" para "desde" quando a data chega.
 
 ---
