@@ -85,8 +85,8 @@
     --atencao:       #9a5b00;  --atencao-suave: #fdf0d9;  --atencao-linha: #f1d39c;
     --critico:       #b3261e;  --critico-suave: #fbe8e6;
 
-    --whats:        #25d366;
-    --whats-texto:  #073b22;
+    --whats:        #189a4e;   /* verde do botão de WhatsApp (texto branco, contraste para texto grande) */
+    --whats-escuro: #12803f;
 
     --raio: 14px;
     --raio-sm: 10px;
@@ -149,8 +149,18 @@
   .btn-largo{ width:100%; min-height:56px; font-size:1.0625rem; }
   .btn-voltar{ background:var(--superficie); color:var(--texto); border:1.5px solid var(--borda); padding:12px 16px; }
   .btn-voltar:hover{ border-color:var(--verde-linha); }
-  .btn-whats{ width:100%; min-height:58px; font-size:1.0625rem; background:var(--whats); color:var(--whats-texto); box-shadow:0 6px 18px rgba(37,211,102,.32); }
-  .btn-whats:hover{ background:#1fc55c; }
+  /* Botão de WhatsApp: verde sólido com texto branco. A cor também é declarada em hexadecimal
+     (com !important) para que nenhum estilo da hospedagem ou do navegador a deixe branca. */
+  .btn.btn-whats{
+    width:100%; min-height:60px; padding:14px 20px;
+    font-size:1.1875rem; font-weight:800; letter-spacing:-.005em;
+    background-color:#189a4e !important; background-color:var(--whats) !important;
+    color:#fff !important; border:0;
+    box-shadow:0 8px 22px rgba(24,154,78,.38);
+  }
+  .btn.btn-whats svg{ color:#fff; flex:none; }
+  @media (hover:hover){ .btn.btn-whats:hover{ background-color:var(--whats-escuro) !important; } }
+  .btn.btn-whats:focus-visible{ outline:3px solid var(--azul); outline-offset:3px; }
   .btn-texto{ min-height:44px; background:transparent; color:var(--texto-suave); text-decoration:underline; text-underline-offset:3px; }
   .btn-texto:hover{ color:var(--texto); }
   .nav{ display:flex; gap:10px; }
@@ -229,11 +239,14 @@
   .armadilha{ position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
 
   /* ============================ RESULTADO ============================ */
-  .res-cabecalho{ display:grid; gap:8px; }
-  .res-cabecalho h1{ font-size:1.625rem; font-weight:800; }
-  .res-intro{ color:var(--texto-suave); }
+  .res-cabecalho{ display:grid; gap:6px; }
+  .res-cabecalho h1{ font-size:1.5rem; font-weight:800; }
+  .secao-cabecalho{ display:grid; gap:4px; }
+  .secao-sub{ font-size:.9375rem; color:var(--texto-suave); }
   .placar{ display:grid; justify-items:center; text-align:center; gap:12px; }
-  .gauge{ position:relative; width:min(240px, 72vw); }
+  .gauge{ position:relative; width:min(220px, 62vw); }
+  .cta-topo{ justify-self:stretch; display:grid; gap:8px; margin-top:6px; text-align:center; }
+  .sem-clt .cta-topo{ margin-top:10px; }
   .gauge svg{ display:block; width:100%; height:auto; }
   .gauge-trilho{ fill:none; stroke:#e5ece9; stroke-width:14; stroke-linecap:round; }
   .gauge-valor{ fill:none; stroke:var(--cor-faixa); stroke-width:14; stroke-linecap:round; transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1); }
@@ -241,7 +254,15 @@
   .placar-num small{ font-size:1rem; font-weight:700; color:var(--texto-suave); margin-left:2px; }
   .faixa{ display:inline-block; padding:6px 16px; border-radius:999px; background:var(--cor-faixa); color:#fff; font-weight:800; font-size:.9375rem; }
   .faixa-frase{ max-width:40ch; }
-  .placar-resumo{ font-size:.875rem; color:var(--texto-suave); text-wrap:balance; }
+  /* Telas baixas (iPhone SE, navegador interno do Instagram): resultado mais compacto para o
+     botão do WhatsApp caber na primeira dobra */
+  @media (max-height:760px){
+    .resultado{ gap:16px; }
+    .res-cabecalho h1{ font-size:1.3125rem; }
+    .placar{ gap:8px; padding-top:16px; padding-bottom:16px; }
+    .gauge{ width:min(176px, 50vw); }
+    .placar-num{ font-size:2.5rem; }
+  }
   /* Títulos e cartões não ficam escondidos atrás do cabeçalho fixo ao rolar até eles */
   .secao, .pend, .urgencia, .cta-bloco{ scroll-margin-top:80px; }
   .btn-whats span{ text-wrap:balance; }
@@ -268,7 +289,7 @@
   .area-topo{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
   .area-nome{ font-weight:700; }
   .barra{ height:6px; border-radius:99px; background:#e8eeeb; overflow:hidden; }
-  .barra span{ display:block; height:100%; border-radius:inherit; background:var(--cor-nivel); }
+  .barra span{ display:block; width:0; height:100%; border-radius:inherit; background:var(--cor-nivel); transition:width .9s cubic-bezier(.2,.7,.2,1); }
   .area-pct{ font-size:.8125rem; color:var(--texto-suave); font-variant-numeric:tabular-nums; }
 
   .pendencias{ list-style:none; margin:0; padding:0; display:grid; gap:12px; }
@@ -1293,25 +1314,40 @@ function renderResultado(){
   const nome = primeiroNome(L.nome);
   const linkWhats = linkWhatsApp(R);
   const altas = R.pendencias.filter(p=> p.prioridade === "alta").length;
+  const botaoWhats = (rotulo)=> `<a class="btn btn-whats" href="${esc(linkWhats)}" target="_blank" rel="noopener" data-whats>${ICONE.whats}<span>${rotulo}</span></a>`;
+
+  // CTA principal: fica dentro do cartão do score, na primeira dobra da tela
+  const ctaTopo = `
+      <div class="cta-topo" id="ctaTopo">
+        ${botaoWhats("Falar com a Ultramed no WhatsApp")}
+        <p class="cta-nota">A mensagem já vai com o resumo do seu diagnóstico.</p>
+      </div>`;
 
   // 2) Score (ou aviso para empresas sem CLT)
+  // Obs.: cores e larguras dinâmicas são aplicadas via JavaScript depois do render, e não com
+  // style="..." no HTML, porque algumas hospedagens (CSP) bloqueiam estilos inline.
   const placar = R.semFuncionarios ? `
     <div class="cartao sem-clt">
       <span class="chip chip-info">Sem empregados CLT</span>
       <h2>${esc(CONFIG.semFuncionarios.titulo)}</h2>
       <p>${esc(CONFIG.semFuncionarios.texto)}</p>
+      ${ctaTopo}
     </div>` : `
-    <div class="cartao placar" style="--cor-faixa:${R.faixa.cor}">
+    <div class="cartao placar" id="placar">
       <div class="gauge" role="img" aria-label="Score de conformidade: ${R.score} de 100, classificação ${esc(R.faixa.rotulo)}">
         ${gaugeSvg(R.score)}
         <p class="placar-num" aria-hidden="true"><span id="placarNum">${menosMovimento() ? R.score : 0}</span><small>/100</small></p>
       </div>
       <span class="faixa">${esc(R.faixa.rotulo)}</span>
       <p class="faixa-frase">${esc(R.faixa.frase)}</p>
-      <p class="placar-resumo">${R.pendencias.length === 0 ? "Nenhuma pendência encontrada"
-        : R.pendencias.length + (R.pendencias.length === 1 ? " pendência encontrada" : " pendências encontradas")
-          + (altas ? " · " + altas + " de prioridade alta" : "")}</p>
+      ${ctaTopo}
     </div>`;
+
+  // Abertura da lista de pendências: quantidade + texto conforme a situação informada no perfil
+  const resumoPend = R.semFuncionarios ? "" : (R.pendencias.length === 0 ? "Nenhuma pendência encontrada."
+    : R.pendencias.length + (R.pendencias.length === 1 ? " pendência encontrada" : " pendências encontradas")
+      + (altas ? ", " + altas + " de prioridade alta." : "."));
+  const introSituacao = !R.semFuncionarios && CONFIG.introPorSituacao[R.perfil.situacao] ? " " + CONFIG.introPorSituacao[R.perfil.situacao] : "";
 
   // 3) Semáforo por área
   const semaforo = R.semFuncionarios ? "" : `
@@ -1321,7 +1357,7 @@ function renderResultado(){
         ${R.areas.map(a=> `
           <li class="area nivel-${a.nivel}">
             <div class="area-topo"><span class="area-nome">${esc(a.nome)}</span><span class="chip ${NIVEL[a.nivel].chip}">${NIVEL[a.nivel].rotulo}</span></div>
-            <div class="barra" aria-hidden="true"><span style="width:${a.pct}%"></span></div>
+            <div class="barra" aria-hidden="true"><span data-pct="${a.pct}"></span></div>
             <span class="area-pct">${a.pct}% em conformidade</span>
           </li>`).join("")}
       </ul>
@@ -1365,25 +1401,26 @@ function renderResultado(){
   $app.innerHTML = `
     <section class="tela resultado">
       <header class="res-cabecalho">
-        <p class="rotulo">Diagnóstico de saúde ocupacional</p>
-        <h1 tabindex="-1" data-foco>Olá${nome ? ", " + esc(nome) : ""}! Aqui está o resultado da empresa ${esc(L.empresa)}.</h1>
-        ${R.perfil.situacao && CONFIG.introPorSituacao[R.perfil.situacao] && !R.semFuncionarios
-          ? `<p class="res-intro">${esc(CONFIG.introPorSituacao[R.perfil.situacao])}</p>` : ""}
+        <p class="rotulo">Diagnóstico de SST · ${esc(L.empresa)}</p>
+        <h1 tabindex="-1" data-foco>Olá${nome ? ", " + esc(nome) : ""}! Veja como está a sua empresa.</h1>
       </header>
 
       ${placar}
       ${semaforo}
 
       <section class="bloco" aria-labelledby="tPend">
-        <h2 class="secao" id="tPend">${R.semFuncionarios ? "Para contratar já em dia" : "O que falta para você ficar em dia"}</h2>
+        <div class="secao-cabecalho">
+          <h2 class="secao" id="tPend">${R.semFuncionarios ? "Para contratar já em dia" : "O que falta para você ficar em dia"}</h2>
+          ${resumoPend || introSituacao ? `<p class="secao-sub">${esc(resumoPend + introSituacao)}</p>` : ""}
+        </div>
         ${listaPend}
       </section>
 
       ${urgencia}
 
-      <div class="cta-bloco" id="ctaPrincipal">
+      <div class="cta-bloco" id="ctaFinal">
         <h2>${R.pendencias.length ? "Quer resolver isso sem dor de cabeça?" : "Quer manter tudo em dia?"}</h2>
-        <a class="btn btn-whats" href="${esc(linkWhats)}" target="_blank" rel="noopener" data-whats>${ICONE.whats}<span>Falar com a Ultramed no WhatsApp</span></a>
+        ${botaoWhats("Falar com a Ultramed no WhatsApp")}
         <p class="cta-nota">A mensagem já vai com o resumo do seu diagnóstico.</p>
         <button type="button" class="btn btn-texto" id="btnRefazer">Refazer diagnóstico</button>
       </div>
@@ -1391,19 +1428,29 @@ function renderResultado(){
       <p class="disclaimer">Este é um diagnóstico preliminar e orientativo, gerado a partir das suas respostas. Não substitui uma avaliação técnica presencial nem constitui consultoria jurídica. Para um parecer preciso, fale com a equipe da ${esc(CONFIG.empresa.nome)}.</p>
     </section>`;
 
-  // Botão fixo de WhatsApp (aparece enquanto o CTA principal está fora da tela)
+  // Cor da classificação (medidor e selo) e barras do semáforo, aplicadas via JavaScript
+  const placarEl = document.getElementById("placar");
+  if(placarEl) placarEl.style.setProperty("--cor-faixa", R.faixa.cor);
+  const barras = $app.querySelectorAll(".barra span[data-pct]");
+  const preencherBarras = ()=> barras.forEach(s=>{ s.style.width = s.getAttribute("data-pct") + "%"; });
+  if(menosMovimento()) preencherBarras();
+  else requestAnimationFrame(()=> requestAnimationFrame(preencherBarras));
+
+  // Botão fixo de WhatsApp: aparece só quando nenhum dos dois botões da página está visível
   $ctaFixo.innerHTML = `<a class="btn btn-whats" href="${esc(linkWhats)}" target="_blank" rel="noopener" data-whats tabindex="-1">${ICONE.whats}<span>Falar no WhatsApp</span></a>`;
   if("IntersectionObserver" in window){
     $ctaFixo.setAttribute("aria-hidden", "true");
     $ctaFixo.hidden = false;
     const link = $ctaFixo.querySelector("a");
+    const visiveis = new Set();
     observadorCta = new IntersectionObserver((entradas)=>{
-      const mostrar = !entradas[0].isIntersecting;
+      entradas.forEach(e=>{ if(e.isIntersecting) visiveis.add(e.target); else visiveis.delete(e.target); });
+      const mostrar = visiveis.size === 0;
       $ctaFixo.classList.toggle("visivel", mostrar);
       $ctaFixo.setAttribute("aria-hidden", mostrar ? "false" : "true");
       link.tabIndex = mostrar ? 0 : -1;
     });
-    observadorCta.observe(document.getElementById("ctaPrincipal"));
+    ["ctaTopo", "ctaFinal"].forEach(id=> observadorCta.observe(document.getElementById(id)));
   }
 
   document.querySelectorAll("[data-whats]").forEach(a=> a.addEventListener("click", ()=>{
@@ -1432,20 +1479,24 @@ function renderResultado(){
 /* Medidor semicircular: trilho + arco proporcional ao score */
 const COMPRIMENTO_ARCO = Math.PI * 86;
 function gaugeSvg(score){
-  const offset = menosMovimento() ? COMPRIMENTO_ARCO * (1 - score / 100) : COMPRIMENTO_ARCO;
   return `
     <svg viewBox="0 0 200 110" aria-hidden="true" focusable="false">
       <path class="gauge-trilho" d="M14 100 A86 86 0 0 1 186 100"/>
-      ${score > 0 ? `<path class="gauge-valor" id="gaugeValor" d="M14 100 A86 86 0 0 1 186 100"
-        style="stroke-dasharray:${COMPRIMENTO_ARCO.toFixed(2)};stroke-dashoffset:${offset.toFixed(2)}"/>` : ""}
+      ${score > 0 ? `<path class="gauge-valor" id="gaugeValor" d="M14 100 A86 86 0 0 1 186 100"/>` : ""}
     </svg>`;
 }
 function animarGauge(score){
-  if(menosMovimento()) return;
   const arco = document.getElementById("gaugeValor");
   const num = document.getElementById("placarNum");
+  const total = COMPRIMENTO_ARCO.toFixed(2);
+  const alvo = (COMPRIMENTO_ARCO * (1 - score / 100)).toFixed(2);
+  if(arco){
+    arco.style.strokeDasharray = total;
+    arco.style.strokeDashoffset = menosMovimento() ? alvo : total;
+  }
+  if(menosMovimento()) return;
   requestAnimationFrame(()=> requestAnimationFrame(()=>{
-    if(arco) arco.style.strokeDashoffset = (COMPRIMENTO_ARCO * (1 - score / 100)).toFixed(2);
+    if(arco) arco.style.strokeDashoffset = alvo;
   }));
   const inicio = performance.now(), duracao = 1100;
   (function passo(t){
