@@ -1,93 +1,111 @@
 # Diagnóstico gratuito de SST — Ultramed Ocupacional
 
-Página de captação de leads para campanhas de tráfego pago. O visitante responde perguntas rápidas e recebe na hora um score de conformidade (0–100), um semáforo por área, a lista de pendências por prioridade e um botão para falar com a Ultramed no WhatsApp, com o resumo do diagnóstico já na mensagem.
+Página de captação para campanhas de tráfego pago. O visitante responde perguntas rápidas e recebe na hora:
+- um score de conformidade (0–100);
+- um semáforo por área;
+- a lista de pendências por prioridade;
+- um botão para falar com a Ultramed no WhatsApp, já com o resumo do diagnóstico na mensagem.
 
-Tudo fica em **um único arquivo**: `index.html` (HTML, CSS e JavaScript juntos, sem dependências externas).
+**Endereço:** https://ultramed.tribuzz.com.br/
+
+| Arquivo | O que é |
+|---|---|
+| `index.html` | O diagnóstico (HTML, CSS e JavaScript em um único arquivo, sem dependências) |
+| `politica-de-privacidade.html` | Política de privacidade (LGPD), com link no formulário e no rodapé |
+
+Os dois arquivos precisam ser publicados **juntos, na mesma pasta**.
 
 ---
 
-## 1. Publicar em `tribuzz.com.br/ultramed`
+## 1. Publicar em `ultramed.tribuzz.com.br`
 
-A página só precisa que o arquivo `index.html` fique dentro de uma pasta chamada `ultramed` na raiz do site. Escolha o caso que corresponde à hospedagem do tribuzz.com.br:
+O site fica hospedado no **Netlify** (grátis), e o Registro.br só aponta o subdomínio para lá. As entradas atuais do DNS (`tribuzz.com.br`, `lp` e `www`) não mudam.
 
-### Hospedagem com painel (Hostinger, cPanel, Locaweb, KingHost, HostGator…)
-1. Abra o **Gerenciador de Arquivos** (ou conecte por FTP).
-2. Entre na pasta raiz do site: geralmente `public_html` (às vezes `www` ou `htdocs`).
-3. Crie a pasta `ultramed`.
-4. Envie o `index.html` para dentro dela → `public_html/ultramed/index.html`.
-5. Acesse `https://tribuzz.com.br/ultramed/`.
+### Passo 1 — Netlify
+1. Crie uma conta em https://app.netlify.com (pode entrar com o Google).
+2. Abra https://app.netlify.com/drop e **arraste a pasta** que contém `index.html` e `politica-de-privacidade.html`.
+3. O Netlify cria o site com um endereço do tipo `nome-aleatorio-123.netlify.app`. Abra esse endereço e confira se a página funciona.
+4. (Opcional) Em **Site configuration → Change site name**, troque para algo como `ultramed-diagnostico`. O endereço passa a ser `ultramed-diagnostico.netlify.app`.
+5. Em **Domain management → Add a domain**, digite `ultramed.tribuzz.com.br` e confirme. Se o Netlify perguntar sobre DNS, escolha configurar em um provedor externo.
 
-### Site em WordPress
-Funciona igual ao caso acima: envie a pasta pelo Gerenciador de Arquivos/FTP (não crie uma "página" no WordPress). Uma pasta real tem prioridade sobre as páginas do WordPress.
-Se usar plugin de cache ou Cloudflare, limpe o cache depois de enviar ou atualizar o arquivo.
+### Passo 2 — Registro.br
+1. Em https://registro.br, abra o domínio **tribuzz.com.br** e vá em **DNS → Configurar zona DNS**.
+2. Clique em **NOVA ENTRADA** e preencha:
 
-### Site publicado na Vercel ou no Netlify a partir de um repositório
-- Site estático: coloque o arquivo em `ultramed/index.html` dentro da pasta publicada.
-- Next.js: coloque em `public/ultramed/index.html` e acesse `/ultramed/index.html`, ou crie uma *rewrite* de `/ultramed` para `/ultramed/index.html`.
+   | Tipo | Nome | Dados |
+   |---|---|---|
+   | CNAME | `ultramed` | `ultramed-diagnostico.netlify.app` (o endereço do seu site no Netlify) |
 
-### Alternativa: subdomínio `ultramed.tribuzz.com.br`
-Útil se não houver acesso à hospedagem principal:
-1. Em app.netlify.com: **Add new site → Deploy manually** e arraste a pasta com o `index.html`.
-2. Em **Domain settings**, adicione `ultramed.tribuzz.com.br`.
-3. No DNS do domínio, crie um registro **CNAME** `ultramed` apontando para o endereço `*.netlify.app` indicado.
+3. Clique em **SALVAR ALTERAÇÕES**.
 
-> Use sempre a URL com **https** e com a barra final nos anúncios: `https://tribuzz.com.br/ultramed/`
+### Passo 3 — HTTPS
+A propagação costuma levar de alguns minutos a algumas horas. Depois disso, o Netlify ativa o **https** sozinho, em **Domain management → HTTPS**. Se aparecer "Awaiting External DNS", é só aguardar.
+
+### Para atualizar a página depois
+No Netlify, abra o site, vá na aba **Deploys** e arraste a pasta de novo. O endereço não muda.
 
 ---
 
 ## 2. Checklist antes de ligar os anúncios
 
-| # | Item | Onde |
-|---|------|------|
-| 1 | Confirmar o número do WhatsApp (hoje: `5532999002140`) | `CONFIG.empresa.whatsapp` e no bloco `<noscript>` |
-| 2 | Colocar o ID do Pixel/conjunto de dados da Meta | `CONFIG.rastreamento.metaPixelId` |
-| 3 | Verificar o domínio `tribuzz.com.br` no Gerenciador de Negócios da Meta | Business Settings → Brand Safety → Domains |
-| 4 | Conferir os eventos no **Gerenciador de Eventos → Testar eventos**: `PageView`, `InicioDiagnostico`, `Lead`, `Contact` | Meta Events Manager |
-| 5 | Configurar o webhook (Make/n8n) e fazer um envio de teste | `CONFIG.rastreamento.webhookUrl` |
-| 6 | Preencher a política de privacidade e o CNPJ | `CONFIG.empresa.politicaPrivacidadeUrl`, `CONFIG.empresa.cnpj` |
-| 7 | (Opcional) Logo em imagem e imagem de pré-visualização do link (1200×630) | `CONFIG.empresa.logoUrl`, meta `og:image` no `<head>` |
-| 8 | Abrir o link pelo Instagram no celular e fazer um diagnóstico completo | — |
+| # | Item | Situação |
+|---|------|----------|
+| 1 | WhatsApp `(32) 99900-2140` | ✅ Configurado |
+| 2 | Meta Pixel `1818935802782375` | ✅ Configurado (no `CONFIG` e no `<noscript>`) |
+| 3 | Política de privacidade, CNPJ e contato | ✅ `politica-de-privacidade.html` |
+| 4 | Publicar no Netlify e criar o CNAME `ultramed` no Registro.br | ⬜ Seção 1 |
+| 5 | Abrir `https://ultramed.tribuzz.com.br/` e conferir o cadeado (https) | ⬜ |
+| 6 | Verificar o domínio `tribuzz.com.br` na Meta (veja abaixo) | ⬜ |
+| 7 | Em **Gerenciador de Eventos → Testar eventos**, conferir `PageView`, `InicioDiagnostico`, `Lead` e `Contact` | ⬜ |
+| 8 | Abrir o link pelo Instagram no celular e fazer um diagnóstico completo, até o WhatsApp | ⬜ |
+| 9 | (Opcional) Logo em imagem e imagem de pré-visualização do link (1200×630) | `CONFIG.empresa.logoUrl` e meta `og:image` |
 
-**URL sugerida para o anúncio** (os parâmetros dinâmicos da Meta preenchem campanha e anúncio sozinhos):
+### Verificar o domínio na Meta
+Faça isso no Gerenciador de Negócios que é dono do Pixel `1818935802782375`:
+1. **Configurações do negócio → Segurança da marca → Domínios → Adicionar** e digite `tribuzz.com.br`.
+2. Escolha a verificação por **registro TXT de DNS** e copie o código `facebook-domain-verification=...`.
+3. No Registro.br, adicione uma **NOVA ENTRADA**: tipo **TXT**, nome `tribuzz.com.br`, dados com o código copiado. Salve.
+4. Volte à Meta e clique em **Verificar**.
 
+### URL para os anúncios
 ```
-https://tribuzz.com.br/ultramed/?utm_source=meta&utm_medium=paid_social&utm_campaign={{campaign.name}}&utm_content={{ad.name}}&utm_term={{adset.name}}
+https://ultramed.tribuzz.com.br/?utm_source=meta&utm_medium=paid_social&utm_campaign={{campaign.name}}&utm_content={{ad.name}}&utm_term={{adset.name}}
 ```
+Os parâmetros entre chaves duplas são preenchidos automaticamente pela Meta.
 
-Para otimizar a campanha, use o evento **Lead** (envio do formulário) como conversão. O evento **Contact** (clique no WhatsApp) mede a intenção mais forte.
+Use o evento **Lead** (envio do formulário) como conversão da campanha. O evento **Contact** (clique no WhatsApp) mede a intenção mais forte.
 
 ---
 
 ## 3. O que é rastreado
 
-| Momento | Meta Pixel | `dataLayer` (GTM) | Webhook |
-|---|---|---|---|
-| Abrir a página | `PageView` | — | — |
-| Clicar em "Começar diagnóstico" | `InicioDiagnostico` (personalizado) | `diagnostico_inicio` | — |
-| Enviar o formulário | `Lead` (ou `CompleteRegistration`) | `diagnostico_lead` | `evento=lead` |
-| Refazer com os mesmos dados | — (não duplica o Lead) | — | `evento=diagnostico_refeito` |
-| Clicar no WhatsApp | `Contact` | `diagnostico_whatsapp` | `evento=whatsapp_click` |
+| Momento | Meta Pixel | `dataLayer` (GTM) |
+|---|---|---|
+| Abrir a página | `PageView` | — |
+| Clicar em "Começar diagnóstico" | `InicioDiagnostico` (personalizado) | `diagnostico_inicio` |
+| Enviar o formulário | `Lead` | `diagnostico_lead` |
+| Clicar no WhatsApp | `Contact` | `diagnostico_whatsapp` |
 
-O Pixel e o GTM **não recebem dados pessoais**: só score, classificação e quantidade de pendências.
+O Pixel **não recebe dados pessoais**: só score, classificação e quantidade de pendências.
 
-### Campos enviados ao webhook
+### Sem webhook: como o lead chega
+Hoje o formulário pede só **nome e empresa**, que servem para personalizar o resultado e a mensagem do WhatsApp. Nada é gravado em servidor. **O lead chega à Ultramed quando a pessoa toca no botão do WhatsApp e envia a mensagem.** Quem preenche e não clica fica registrado só como evento `Lead` na Meta, sem os dados de contato.
 
-Formato padrão: formulário (`application/x-www-form-urlencoded`), que funciona com Make e n8n sem bloqueio de CORS. Para enviar JSON, use `webhookFormato: "json"`, desde que o destino aceite CORS.
-
-`evento`, `lead_id`, `meta_event_id`, `data_hora`, `nome`, `empresa`, `whatsapp` (com 55), `email`, `consentimento_lgpd`, `consentimento_data`, `score`, `classificacao`, `qtd_pendencias`, `pendencias_alta`, `pendencia_nr01_psicossocial`, `pendencias` (títulos separados por ` | `), `funcionarios`, `setor`, `grau_risco`, `situacao`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `utm_id`, `fbclid`, `gclid`, `fbp`, `fbc`, `pagina`, `referrer`, `user_agent`, `detalhes_json` (respostas, semáforo e pendências em JSON).
-
-O `meta_event_id` é igual ao `eventID` do evento Lead do Pixel. Se mais tarde você enviar o lead também pela **API de Conversões** (por exemplo, pelo Make), use esse ID para a Meta não contar o lead duas vezes. `fbp` e `fbc` melhoram a correspondência.
+Para guardar todos os leads (por exemplo, numa planilha do Google ou no Kommo):
+1. Configure `CONFIG.rastreamento.webhookUrl`.
+2. Mude `CONFIG.formulario.pedirContato` para `true`. O formulário volta a pedir WhatsApp e e-mail, e o texto de consentimento muda junto.
+3. Atualize as seções 2 a 5 da política de privacidade.
 
 ---
 
 ## 4. Como editar
 
-Tudo fica no objeto `CONFIG`, no início do `<script>`:
+Tudo fica no objeto `CONFIG`, no início do `<script>` do `index.html`:
 
 - **Perguntas, opções e pesos**: `CONFIG.blocos`. O valor de cada opção multiplica o peso da pergunta: `1` = em dia, `0.5` = parcial, `0` = não/não sei. O score é normalizado de 0 a 100.
-- **Pendências**: cada pergunta tem uma função `pendencia` que devolve título, risco, serviço da Ultramed e prioridade.
-- **Quando cada pergunta aparece**: `mostrarSe` (por exemplo, o LTCAT só aparece quando há exposição; empresas sem CLT pulam direto para o formulário).
-- **Faixas do score e textos**: `CONFIG.faixas` (Crítico 0–40, Atenção 41–70, Bom 71–100).
+- **Pendências**: cada pergunta tem uma função `pendencia` com título, risco, serviço da Ultramed e prioridade.
+- **Quando cada pergunta aparece**: `mostrarSe`. Por exemplo, o LTCAT só aparece quando há exposição, e empresas sem CLT vão direto ao formulário.
+- **Faixas do score**: `CONFIG.faixas` (Crítico 0–40, Atenção 41–70, Bom 71–100).
 - **Cores**: `CONFIG.marca`. As cores do semáforo ficam no `:root` do `<style>`.
 - **Prazo da NR-01**: `CONFIG.nr01.dataFiscalizacao`. Os textos passam sozinhos de "a partir de" para "desde" quando a data chega.
 
@@ -95,6 +113,7 @@ Tudo fica no objeto `CONFIG`, no início do `<script>`:
 
 ## 5. Pontos de atenção
 
-- **LGPD e Pixel**: o formulário só envia dados com o consentimento marcado. O Pixel dispara o `PageView` ao abrir a página, como na maioria das landing pages. Se o jurídico pedir consentimento também para cookies de publicidade, é preciso adicionar um banner de cookies antes de iniciar o Pixel.
-- **Prazo da NR-01**: os textos partem de 26/05/2026 como início da fiscalização punitiva dos riscos psicossociais. Se o MTE publicar uma nova data, ajuste `CONFIG.nr01`.
-- **Diagnóstico orientativo**: a página informa que o resultado é preliminar e não substitui avaliação técnica nem consultoria jurídica. Mantenha esse aviso.
+- **Revisão jurídica da política**: o texto segue a LGPD e descreve o funcionamento real da página, mas vale passar por um advogado antes de anunciar. Três pontos merecem confirmação: o papel da Tribuzz como operadora, a hospedagem no Netlify e a base legal escolhida para o Pixel (legítimo interesse).
+- **Pixel antes do consentimento**: o `PageView` dispara ao abrir a página, como na maioria das landing pages. Se o jurídico exigir consentimento prévio para cookies de publicidade, será preciso um banner de cookies, e isso reduz o volume de dados para otimizar a campanha.
+- **Prazo da NR-01**: os textos partem de 26/05/2026 como início da fiscalização punitiva dos riscos psicossociais. Se o MTE publicar outra data, ajuste `CONFIG.nr01`.
+- **Diagnóstico orientativo**: a página avisa que o resultado é preliminar e não substitui avaliação técnica nem consultoria jurídica. Mantenha esse aviso.

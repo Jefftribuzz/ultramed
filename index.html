@@ -9,15 +9,15 @@
 <meta name="color-scheme" content="light">
 <meta name="format-detection" content="telephone=no">
 <!-- [EDITAR] Endereço final da página (usado por buscadores e pré-visualização de links) -->
-<link rel="canonical" href="https://tribuzz.com.br/ultramed/">
+<link rel="canonical" href="https://ultramed.tribuzz.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Ultramed Ocupacional">
 <meta property="og:title" content="PGR, PCMSO, exames e eSocial: o que está faltando na sua empresa?">
 <meta property="og:description" content="Diagnóstico gratuito em 2 minutos: score de conformidade, semáforo por área e a lista do que falta para ficar em dia.">
-<meta property="og:url" content="https://tribuzz.com.br/ultramed/">
+<meta property="og:url" content="https://ultramed.tribuzz.com.br/">
 <!-- [EDITAR] Imagem de pré-visualização (1200x630). Descomente e aponte para o arquivo:
-<meta property="og:image" content="https://tribuzz.com.br/ultramed/capa.jpg"> -->
+<meta property="og:image" content="https://ultramed.tribuzz.com.br/capa.jpg"> -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23157a5a'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
 
 <!--
@@ -33,27 +33,30 @@
   2) META PIXEL ...... CONFIG.rastreamento.metaPixelId → ID do pixel/conjunto de dados. Vazio = desligado.
                        Eventos enviados: PageView (abrir), InicioDiagnostico (clicar em começar),
                        Lead (enviar o formulário) e Contact (clicar no WhatsApp).
+                       O mesmo ID aparece no <noscript> (procure "facebook.com/tr").
   3) WEBHOOK/CRM ..... CONFIG.rastreamento.webhookUrl → URL do Make, n8n, Kommo etc. Vazio = desligado.
                        Envia os campos do lead, score, pendências, UTMs e fbp/fbc. Se falhar, a
                        experiência do usuário NÃO é afetada (o WhatsApp continua funcionando).
+                       Para pedir também WhatsApp e e-mail no formulário: CONFIG.formulario.pedirContato.
   4) GOOGLE TAG MANAGER (opcional) .. CONFIG.rastreamento.gtmId → "GTM-XXXXXXX".
   5) CORES ........... CONFIG.marca (verde, verdeEscuro, azul). As demais cores ficam no :root do <style>.
   6) LOGO ............ CONFIG.empresa.logoUrl → nome do arquivo de imagem colocado na mesma pasta
                        (ex.: "logo-ultramed.png"). Vazio = logo em texto.
   7) LGPD ............ CONFIG.empresa.politicaPrivacidadeUrl e CONFIG.empresa.cnpj (aparecem no
-                       consentimento e no rodapé). Recomendado preencher antes de anunciar.
+                       consentimento e no rodapé). A política fica em politica-de-privacidade.html,
+                       que deve ser publicado junto com este arquivo.
   8) PERGUNTAS ....... CONFIG.blocos → cada pergunta tem texto, peso, opções (valor 1 = em dia,
                        0.5 = parcial, 0 = não/não sei) e a pendência que aparece no resultado.
                        "mostrarSe" controla quando a pergunta/bloco aparece (porte, setor etc.).
   9) PRAZO NR-01 ..... CONFIG.nr01.dataFiscalizacao. Os textos mudam sozinhos de "a partir de"
                        para "desde" quando a data passa.
 
-  COMO PUBLICAR EM tribuzz.com.br/ultramed
-  - Crie uma pasta chamada "ultramed" na raiz do site (ex.: public_html/ultramed no cPanel/Hostinger)
-    e coloque este arquivo dentro dela com o nome index.html. Pronto: tribuzz.com.br/ultramed/
-  - Em sites WordPress isso funciona do mesmo jeito (a pasta real tem prioridade sobre as páginas).
-  - Alternativa: subdomínio ultramed.tribuzz.com.br apontando (CNAME) para um site no Netlify/Vercel,
-    publicado arrastando a pasta com este index.html.
+  COMO PUBLICAR EM https://ultramed.tribuzz.com.br/
+  1) Netlify (app.netlify.com/drop): arraste a pasta com index.html + politica-de-privacidade.html.
+  2) No site criado: Domain management → Add a domain → ultramed.tribuzz.com.br
+  3) Registro.br → tribuzz.com.br → Configurar zona DNS → Nova entrada:
+     CNAME | ultramed | <nome-do-site>.netlify.app  → Salvar alterações.
+  Para atualizar depois: no Netlify, aba Deploys, arraste a pasta de novo.
   Detalhes e checklist antes de anunciar: veja o README.md.
 
   AVISO: diagnóstico preliminar e orientativo. Não é auditoria legal nem consultoria jurídica.
@@ -336,6 +339,8 @@
       <h1 style="font-size:1.25rem;margin-bottom:8px">Ative o JavaScript para fazer o diagnóstico</h1>
       <p>Ou fale direto com a Ultramed Ocupacional pelo <a href="https://wa.me/5532999002140">WhatsApp</a>.</p>
     </div>
+    <!-- Meta Pixel para navegadores sem JavaScript (mesmo ID de CONFIG.rastreamento.metaPixelId) -->
+    <img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1818935802782375&amp;ev=PageView&amp;noscript=1">
   </noscript>
 </main>
 
@@ -357,10 +362,19 @@ const CONFIG = {
   empresa: {
     nome: "Ultramed Ocupacional",
     descricao: "Medicina e Segurança do Trabalho",
-    whatsapp: "5532999002140",   // [EDITAR] 55 + DDD + número, só dígitos
+    whatsapp: "5532999002140",   // 55 + DDD + número, só dígitos
     logoUrl: "",                 // [EDITAR] ex.: "logo-ultramed.png" (mesma pasta). Vazio = logo em texto
-    cnpj: "",                    // [EDITAR] ex.: "00.000.000/0001-00" (aparece no rodapé)
-    politicaPrivacidadeUrl: "",  // [EDITAR] link da política de privacidade (recomendado para LGPD)
+    cnpj: "21.678.523/0001-61",
+    site: "https://www.ultramedocupacional.com/",
+    politicaPrivacidadeUrl: "politica-de-privacidade.html",   // arquivo na mesma pasta deste index.html
+  },
+
+  /* ------- Formulário antes do resultado ------- */
+  formulario: {
+    // false = pede só nome e empresa (usados para personalizar o resultado e a mensagem do WhatsApp).
+    // true  = pede também WhatsApp e e-mail. Só ligue junto com um webhook (CONFIG.rastreamento.webhookUrl);
+    //         sem webhook esses dados não seriam enviados a lugar nenhum. Atualize a política de privacidade.
+    pedirContato: false,
   },
 
   /* ------- Cores principais (sobrescrevem as variáveis do :root) ------- */
@@ -372,7 +386,7 @@ const CONFIG = {
 
   /* ------- Rastreamento e integrações (deixe "" para desligar) ------- */
   rastreamento: {
-    metaPixelId:    "",        // [EDITAR: PIXEL_ID] ex.: "123456789012345"
+    metaPixelId:    "1818935802782375",   // Meta Pixel da campanha (vazio = desligado)
     eventoLead:     "Lead",    // "Lead" ou "CompleteRegistration"
     webhookUrl:     "",        // [EDITAR: WEBHOOK_URL] ex.: "https://hook.us1.make.com/xxxx"
     webhookFormato: "form",    // "form" (recomendado: funciona com Make/n8n sem bloqueio de CORS) ou "json"
@@ -1064,16 +1078,28 @@ function renderPergunta(){
 /* ---------- TELA 3: CAPTURA DO LEAD ---------- */
 function renderCaptura(){
   const r = estado.rascunho;
+  const pedeContato = !!CONFIG.formulario.pedirContato;
   const pol = CONFIG.empresa.politicaPrivacidadeUrl;
   const linkPolitica = pol ? ` Veja a <a href="${esc(pol)}" target="_blank" rel="noopener">política de privacidade</a>.` : "";
+  const nomeEmpresa = "<strong>" + esc(CONFIG.empresa.nome) + "</strong>";
+
+  // Os textos descrevem exatamente o que acontece com os dados em cada modo
+  const consentimento = pedeContato
+    ? `Concordo que a ${nomeEmpresa} use meus dados (nome, empresa, WhatsApp e e-mail) para me enviar este diagnóstico e entrar em contato sobre serviços de saúde e segurança do trabalho, conforme a LGPD (Lei nº 13.709/2018). Posso pedir a exclusão a qualquer momento.${linkPolitica}`
+    : `Concordo com o uso destas informações para gerar o meu diagnóstico, conforme a LGPD (Lei nº 13.709/2018). Elas não ficam gravadas e só chegam à ${nomeEmpresa} se eu decidir enviar a mensagem pelo WhatsApp.${linkPolitica}`;
+  const nota = pedeContato
+    ? `Usamos seus dados apenas para este diagnóstico e para o contato da ${esc(CONFIG.empresa.nome)}.`
+    : `Esta página usa o Meta Pixel para medir o desempenho dos anúncios, sem enviar seu nome nem o da empresa.`;
 
   $app.innerHTML = `
     <section class="tela">
       <form class="cartao captura" id="formCaptura" novalidate>
         <div>
           <p class="etapa">Última etapa</p>
-          <h1 class="captura-titulo" tabindex="-1" data-foco>Para quem enviamos o relatório?</h1>
-          <p class="captura-sub">Seu diagnóstico está pronto. Informe seus dados para ver o resultado personalizado.</p>
+          <h1 class="captura-titulo" tabindex="-1" data-foco>${pedeContato ? "Para quem enviamos o relatório?" : "Para quem é este diagnóstico?"}</h1>
+          <p class="captura-sub">${pedeContato
+            ? "Seu diagnóstico está pronto. Informe seus dados para ver o resultado personalizado."
+            : "Seu diagnóstico está pronto. Informe seu nome e o da empresa para ver o resultado personalizado."}</p>
         </div>
 
         <div class="campos">
@@ -1087,6 +1113,7 @@ function renderCaptura(){
             <input id="empresa" name="empresa" type="text" autocomplete="organization" required aria-describedby="erro-empresa" value="${esc(r.empresa)}">
             <p class="erro" id="erro-empresa"></p>
           </div>
+          ${pedeContato ? `
           <div class="campo">
             <label for="whatsapp">WhatsApp com DDD</label>
             <input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(32) 99999-9999" required aria-describedby="erro-whatsapp" value="${esc(r.whatsapp)}">
@@ -1096,7 +1123,7 @@ function renderCaptura(){
             <label for="email">E-mail</label>
             <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="voce@empresa.com.br" required aria-describedby="erro-email" value="${esc(r.email)}">
             <p class="erro" id="erro-email"></p>
-          </div>
+          </div>` : ""}
           <!-- Campo-armadilha anti-robô: pessoas não veem nem preenchem -->
           <div class="armadilha" aria-hidden="true">
             <label for="site">Site</label><input id="site" name="site" type="text" tabindex="-1" autocomplete="off">
@@ -1106,7 +1133,7 @@ function renderCaptura(){
         <div class="consentimento-wrap">
           <label class="consentimento" id="caixaConsentimento">
             <input type="checkbox" id="consentimento" name="consentimento" required aria-describedby="erro-consentimento"${r.consentimento ? " checked" : ""}>
-            <span>Concordo que a <strong>${esc(CONFIG.empresa.nome)}</strong> use meus dados (nome, empresa, WhatsApp e e-mail) para me enviar este diagnóstico e entrar em contato sobre serviços de saúde e segurança do trabalho, conforme a LGPD (Lei nº 13.709/2018). Posso pedir a exclusão a qualquer momento.${linkPolitica}</span>
+            <span>${consentimento}</span>
           </label>
           <p class="erro" id="erro-consentimento"></p>
         </div>
@@ -1115,7 +1142,7 @@ function renderCaptura(){
           <button type="button" class="btn btn-voltar" id="btnVoltar"><span aria-hidden="true">←</span><span class="sr-only">Voltar</span></button>
           <button type="submit" class="btn btn-primario" id="btnVer">Ver meu diagnóstico</button>
         </div>
-        <p class="nota-privacidade">Usamos seus dados apenas para este diagnóstico e para o contato da ${esc(CONFIG.empresa.nome)}.</p>
+        <p class="nota-privacidade">${nota}</p>
       </form>
     </section>`;
 
@@ -1132,36 +1159,40 @@ function renderCaptura(){
   }
   form.addEventListener("input", guardar);
   form.addEventListener("change", guardar);
-  tel.addEventListener("blur", ()=>{ tel.value = formatarTelefone(digitosTelefone(tel.value)); estado.rascunho.whatsapp = tel.value; });
+  if(tel) tel.addEventListener("blur", ()=>{ tel.value = formatarTelefone(digitosTelefone(tel.value)); estado.rascunho.whatsapp = tel.value; });
 
   document.getElementById("btnVoltar").addEventListener("click", voltar);
   form.addEventListener("submit", (e)=>{ e.preventDefault(); enviarCaptura(form); });
 }
 
 function validarCaptura(form){
+  const pedeContato = !!CONFIG.formulario.pedirContato;
+  const campos = pedeContato ? ["nome", "empresa", "whatsapp", "email", "consentimento"] : ["nome", "empresa", "consentimento"];
   const v = {
     nome: form.nome.value.trim(),
     empresa: form.empresa.value.trim(),
-    telefone: digitosTelefone(form.whatsapp.value),
-    email: form.email.value.trim().toLowerCase(),
+    telefone: pedeContato ? digitosTelefone(form.whatsapp.value) : "",
+    email: pedeContato ? form.email.value.trim().toLowerCase() : "",
     consentimento: form.consentimento.checked,
   };
   const erros = {};
   if(v.nome.length < 2) erros.nome = "Informe seu nome.";
   if(v.empresa.length < 2) erros.empresa = "Informe o nome da empresa.";
-  if(!(v.telefone.length === 10 || v.telefone.length === 11) || v.telefone[0] === "0")
-    erros.whatsapp = "Digite o WhatsApp com DDD, por exemplo (32) 99999-9999.";
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) erros.email = "Digite um e-mail válido, por exemplo nome@empresa.com.br.";
+  if(pedeContato){
+    if(!(v.telefone.length === 10 || v.telefone.length === 11) || v.telefone[0] === "0")
+      erros.whatsapp = "Digite o WhatsApp com DDD, por exemplo (32) 99999-9999.";
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) erros.email = "Digite um e-mail válido, por exemplo nome@empresa.com.br.";
+  }
   if(!v.consentimento) erros.consentimento = "Para ver o resultado, marque a autorização de uso dos dados.";
 
-  ["nome", "empresa", "whatsapp", "email", "consentimento"].forEach(campo=>{
+  campos.forEach(campo=>{
     const msg = erros[campo] || "";
     document.getElementById("erro-" + campo).textContent = msg;
     form[campo].setAttribute("aria-invalid", msg ? "true" : "false");
   });
   document.getElementById("caixaConsentimento").classList.toggle("invalido", !!erros.consentimento);
 
-  const primeiro = ["nome", "empresa", "whatsapp", "email", "consentimento"].filter(c=> erros[c])[0];
+  const primeiro = campos.filter(c=> erros[c])[0];
   if(primeiro){ form[primeiro].focus(); return null; }
   return v;
 }
@@ -1182,7 +1213,7 @@ function enviarCaptura(form){
   estado.resultado = calcularResultado();
 
   // >>> Integrações: cada uma isolada, nenhuma bloqueia a navegação <<<
-  const chave = v.email + "|" + v.telefone;
+  const chave = [v.nome, v.empresa, v.email, v.telefone].join("|").toLowerCase();
   const repetido = estado.leadsRastreados.indexOf(chave) >= 0;
   if(!repetido){ estado.leadsRastreados.push(chave); rastrear("lead", dadosDoEvento()); }
   enviarWebhook(repetido ? "diagnostico_refeito" : "lead");
@@ -1515,7 +1546,7 @@ function enviarWebhook(evento){
     data_hora: new Date().toISOString(),
     nome: L.nome,
     empresa: L.empresa,
-    whatsapp: "55" + L.telefone,
+    whatsapp: L.telefone ? "55" + L.telefone : "",
     email: L.email,
     consentimento_lgpd: "sim",
     consentimento_data: L.consentimentoEm,
@@ -1576,6 +1607,7 @@ function montarCabecalhoERodape(){
   document.getElementById("rodapeEmpresa").textContent = E.nome + " · " + E.descricao;
   const extra = [];
   if(E.cnpj) extra.push("CNPJ " + esc(E.cnpj));
+  if(E.site) extra.push('<a href="' + esc(E.site) + '" target="_blank" rel="noopener">' + esc(E.site.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")) + '</a>');
   if(E.politicaPrivacidadeUrl) extra.push('<a href="' + esc(E.politicaPrivacidadeUrl) + '" target="_blank" rel="noopener">Política de privacidade</a>');
   document.getElementById("rodapeExtra").innerHTML = extra.join(" · ");
 }
