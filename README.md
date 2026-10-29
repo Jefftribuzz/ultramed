@@ -89,6 +89,11 @@ Use o evento **Lead** (envio do formulário) como conversão da campanha. O even
 
 O Pixel **não recebe dados pessoais**: só score, classificação e quantidade de pendências.
 
+Os eventos são os mesmos no computador e no celular:
+- **PageView** é contado uma vez por visita. O Pixel está configurado para não contar cada pergunta como uma página nova (`fbq.disablePushState`).
+- **Contact no celular:** o toque no WhatsApp registra o evento e só abre a conversa 0,35 s depois. Sem essa espera, o app do WhatsApp poderia abrir antes de o evento sair, principalmente no navegador interno do Instagram. No computador, o WhatsApp abre em outra aba e o resultado continua na tela.
+- Bloqueadores de anúncio e navegadores com proteção contra rastreamento podem impedir o Pixel em qualquer aparelho. Para cobrir esses casos, o caminho é a API de Conversões.
+
 ### Sem webhook: como o lead chega
 Hoje o formulário pede só **nome e empresa**, que servem para personalizar o resultado e a mensagem do WhatsApp. Nada é gravado em servidor. **O lead chega à Ultramed quando a pessoa toca no botão do WhatsApp e envia a mensagem.** Quem preenche e não clica fica registrado só como evento `Lead` na Meta, sem os dados de contato.
 
