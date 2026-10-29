@@ -31,7 +31,8 @@
   1) WHATSAPP ........ CONFIG.empresa.whatsapp  → só dígitos: 55 + DDD + número (ex.: "5532999002140").
                        Atenção: o mesmo número aparece também no bloco <noscript> (procure "wa.me").
   2) META PIXEL ...... CONFIG.rastreamento.metaPixelId → ID do pixel/conjunto de dados. Vazio = desligado.
-                       Eventos enviados: PageView (abrir), InicioDiagnostico (clicar em começar),
+                       Eventos enviados: PageView (abrir), filtro-empresa (resposta do filtro:
+                       "empresa" ou "pessoa_fisica"), InicioDiagnostico (é empresa, começou),
                        Lead (enviar o formulário) e Contact (clicar no WhatsApp).
                        O mesmo ID aparece no <noscript> (procure "facebook.com/tr").
   3) WEBHOOK/CRM ..... CONFIG.rastreamento.webhookUrl → URL do Make, n8n, Kommo etc. Vazio = desligado.
@@ -50,6 +51,8 @@
                        "mostrarSe" controla quando a pergunta/bloco aparece (porte, setor etc.).
   9) PRAZO NR-01 ..... CONFIG.nr01.dataFiscalizacao. Os textos mudam sozinhos de "a partir de"
                        para "desde" quando a data passa.
+  10) FILTRO ........ CONFIG.filtro (textos da tela "é empresa?") e CONFIG.empresa.instagramUrl
+                       (para onde vai quem responde "Não").
 
   COMO PUBLICAR EM https://ultramed.tribuzz.com.br/
   1) Netlify (app.netlify.com/drop): arraste a pasta com index.html + politica-de-privacidade.html.
@@ -198,18 +201,50 @@
   .etapa span{ color:var(--texto-suave); }
   .pergunta-titulo{ font-size:1.3125rem; font-weight:800; }
   .ajuda{ margin-top:8px; color:var(--texto-suave); font-size:.9375rem; }
-  .opcoes{ display:grid; gap:10px; }
-  .opcao{
-    display:flex; align-items:center; gap:12px; min-height:54px; padding:12px 14px;
-    background:var(--superficie); border:1.5px solid var(--borda); border-radius:var(--raio-sm);
-    cursor:pointer; transition:border-color .15s ease, background-color .15s ease;
+
+
+  /* ============================ ETAPAS (várias perguntas por página) ============================ */
+  .etapa-pagina{ gap:0; }
+  .etapa-topo{ display:grid; gap:4px; margin-bottom:6px; }
+  .q{ margin:0; padding:18px 0 0; border:0; border-top:1px solid var(--borda); min-width:0; scroll-margin-top:84px; scroll-margin-bottom:110px; }
+  .etapa-topo + .q{ border-top:0; padding-top:10px; }
+  .q + .q{ margin-top:18px; }
+  .q-texto{ float:left; width:100%; padding:0; font-weight:800; font-size:1.0625rem; line-height:1.3; }
+  .q-texto + *{ clear:both; }
+  .q-ajuda{ margin-top:4px; font-size:.875rem; color:var(--texto-suave); }
+  .op-lista{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; clear:both; }
+  .pil{ position:relative; display:flex; }
+  .pil input{ position:absolute; width:1px; height:1px; margin:0; opacity:0; }
+  .pil span{
+    display:inline-flex; align-items:center; min-height:44px; padding:9px 16px;
+    border:1.5px solid var(--borda); border-radius:999px; background:var(--superficie);
+    font-size:.9375rem; font-weight:600; line-height:1.25; cursor:pointer;
+    transition:background-color .15s ease, border-color .15s ease, color .15s ease;
     -webkit-tap-highlight-color:transparent;
   }
-  @media (hover:hover){ .opcao:hover{ border-color:var(--verde-linha); background:#fafdfb; } }
-  .opcao input{ width:20px; height:20px; margin:0; flex:none; accent-color:var(--verde); }
-  .opcao input:focus-visible{ outline:3px solid var(--azul); outline-offset:3px; }
-  .opcao.marcada{ border-color:var(--verde); background:var(--verde-suave); }
-  .opcao.marcada span{ font-weight:600; }
+  @media (hover:hover){ .pil:hover span{ border-color:var(--verde-linha); background:#f7fbf8; } }
+  .pil input:checked + span{ background:var(--verde); border-color:var(--verde); color:#fff; }
+  .pil input:focus-visible + span{ outline:3px solid var(--azul); outline-offset:2px; }
+  .q-erro{ margin-top:6px; color:var(--critico); font-size:.8125rem; font-weight:700; }
+  .q-erro:empty{ display:none; }
+  .q.faltando .q-texto{ color:var(--critico); }
+  .q.faltando .pil span{ border-color:#e3aaa4; }
+  .etapa-pagina .nav{ margin-top:24px; }
+  .sem-animacao{ animation:none; }
+
+  /* ============================ FILTRO (empresa com CNPJ?) ============================ */
+  .filtro{ display:grid; gap:16px; }
+  .filtro-opcoes{ display:grid; gap:10px; }
+  .filtro-op{
+    display:grid; gap:2px; text-align:left; width:100%; padding:16px 18px; min-height:68px;
+    border:1.5px solid var(--borda); border-radius:var(--raio-sm); background:var(--superficie);
+    color:var(--texto); cursor:pointer; transition:border-color .15s ease, background-color .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .filtro-op strong{ font-size:1.0625rem; }
+  .filtro-op span{ font-size:.875rem; color:var(--texto-suave); }
+  @media (hover:hover){ .filtro-op:hover{ border-color:var(--verde); background:var(--verde-suave); } }
+  .filtro-op:active{ border-color:var(--verde); background:var(--verde-suave); }
 
   /* ============================ FORMULÁRIO ============================ */
   .captura{ display:grid; gap:18px; }
@@ -327,6 +362,19 @@
   .cta-fixo.visivel{ transform:none; }
   .cta-fixo .btn{ display:flex; max-width:var(--max); min-height:52px; margin:0 auto; }
 
+  /* Escolha WhatsApp x WhatsApp Business (Android) */
+  .escolha-fundo{ position:fixed; inset:0; z-index:50; display:flex; align-items:flex-end; justify-content:center; background:rgba(19,34,29,.45); }
+  .escolha{
+    width:100%; max-width:var(--max); display:grid; gap:10px;
+    padding:20px 16px calc(16px + env(safe-area-inset-bottom));
+    background:var(--superficie); border-radius:20px 20px 0 0; box-shadow:0 -10px 30px rgba(0,0,0,.2);
+    animation:sobe .22s ease-out;
+  }
+  @keyframes sobe{ from{ transform:translateY(100%); } to{ transform:none; } }
+  .escolha-titulo{ text-align:center; font-weight:800; font-size:1.0625rem; margin-bottom:2px; }
+  .btn.btn-whats-business{ width:100%; min-height:58px; font-size:1.125rem; font-weight:800; background:var(--verde-escuro); color:#fff; }
+  .btn.btn-whats-business svg{ color:#fff; flex:none; }
+
   /* ============================ RODAPÉ ============================ */
   .rodape{ padding:20px 16px 32px; text-align:center; font-size:.8125rem; color:var(--texto-suave); }
   .rodape p + p{ margin-top:4px; }
@@ -341,9 +389,11 @@
     .hero{ gap:14px; }
     .pergunta{ gap:14px; }
     .pergunta-titulo{ font-size:1.1875rem; }
+    .q{ padding-top:16px; }
+    .q + .q{ margin-top:16px; }
+    .q-texto{ font-size:1rem; }
+    .pil span{ padding:8px 14px; font-size:.9063rem; }
     .ajuda{ margin-top:6px; font-size:.875rem; }
-    .opcoes{ gap:8px; }
-    .opcao{ min-height:48px; padding:10px 12px; }
     .captura{ gap:14px; }
     .captura-titulo{ font-size:1.25rem; }
     .campos{ gap:12px; }
@@ -359,6 +409,7 @@
       border-radius:0 0 var(--raio) var(--raio);
       box-shadow:0 -8px 18px rgba(19,34,29,.06);
     }
+    .etapa-pagina .nav{ margin-top:20px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -418,6 +469,9 @@ const CONFIG = {
     cnpj: "21.678.523/0001-61",
     site: "https://www.ultramedocupacional.com/",
     politicaPrivacidadeUrl: "politica-de-privacidade.html",   // arquivo na mesma pasta deste index.html
+    // Instagram da Ultramed: para onde vai quem responde "Não" no filtro (não é empresa).
+    // Se ficar vazio, essa pessoa é levada ao site da Ultramed.
+    instagramUrl: "https://www.instagram.com/ultramedocupacional/",
   },
 
   /* ------- Formulário antes do resultado ------- */
@@ -460,11 +514,13 @@ const CONFIG = {
       frase:"Sua empresa está bem. Vale uma revisão para manter tudo em conformidade." },
   ],
 
-  /* ------- Textos de abertura do resultado, conforme a situação informada no perfil ------- */
-  introPorSituacao: {
-    nada:  "Você contou que ainda não tem nada estruturado. Abaixo está, em ordem de prioridade, o caminho para regularizar.",
-    parte: "Você contou que tem parte da documentação. Veja o que já está bem e o que ainda falta.",
-    tudo:  "Você contou que já tem tudo e quer revisar. Veja se as suas respostas confirmam isso.",
+  /* ------- Filtro de público (tela antes da primeira etapa) ------- */
+  filtro: {
+    titulo: "O diagnóstico é para uma empresa?",
+    texto: "Ele foi feito para empresas com CNPJ que têm ou vão contratar funcionários.",
+    sim: { titulo:"Sim, é uma empresa", detalhe:"Tem CNPJ" },
+    nao: { titulo:"Não", detalhe:"Sou pessoa física" },
+    mensagemNao: "Este diagnóstico é exclusivo para empresas. Vamos te levar ao Instagram da Ultramed, com conteúdos sobre saúde e segurança do trabalho.",
   },
 
   /* ------- Resultado para empresas sem empregados CLT ------- */
@@ -493,29 +549,32 @@ const CONFIG = {
   /*
     BLOCOS E PERGUNTAS
     ------------------
-    Bloco:    { id, titulo, area (nome no semáforo; null = não pontua), mostrarSe?, perguntas }
+    Bloco:    { id, titulo, etapa, area (nome no semáforo; null = não pontua), mostrarSe?, perguntas }
+      - etapa: título da página do questionário. Blocos seguidos com a mesma etapa aparecem
+        juntos na mesma página (ex.: eSocial + Complementos). Cada bloco continua sendo uma
+        área separada no semáforo.
     Pergunta: { id, texto, ajuda?, peso, opcoes, mostrarSe?, pendencia? }
       - texto/ajuda podem ser texto fixo ou função (perfil, respostas) => texto
       - opcoes: { rotulo, valor, chave }  → valor 1 = em dia | 0.5 = parcial | 0 = não/não sei
       - mostrarSe(perfil, respostas) => true/false
       - pendencia(perfil, respostas) => null (em dia) ou
           { titulo, risco, servico, prioridade:"alta"|"media", psicossocial?:true }
-    "perfil" traz: funcionarios ("0" | "1-19" | "20-49" | "50+"), setor, grauRisco, situacao.
+    "perfil" traz: funcionarios ("0" | "1-19" | "20-49" | "50+") e setor.
   */
   blocos: [
 
     /* ===================== BLOCO 0 — PERFIL (não pontua, personaliza) ===================== */
     {
-      id:"perfil", titulo:"Perfil da empresa", area:null,
+      id:"perfil", titulo:"Perfil da empresa", etapa:"Sua empresa", area:null,
       perguntas:[
-        { id:"funcionarios", peso:0, texto:"Quantos funcionários com carteira assinada (CLT) a empresa tem hoje?",
+        { id:"funcionarios", peso:0, texto:"Quantos funcionários com carteira assinada (CLT)?",
           opcoes:[
             { rotulo:"Nenhum ainda", valor:0, chave:"0" },
             { rotulo:"1 a 19",       valor:0, chave:"1-19" },
             { rotulo:"20 a 49",      valor:0, chave:"20-49" },
             { rotulo:"50 ou mais",   valor:0, chave:"50+" },
           ]},
-        { id:"setor", peso:0, texto:"Qual é o setor de atuação da empresa?",
+        { id:"setor", peso:0, texto:"Qual é o setor de atuação?",
           opcoes:[
             { rotulo:"Comércio",              valor:0, chave:"comercio" },
             { rotulo:"Indústria",             valor:0, chave:"industria" },
@@ -525,34 +584,19 @@ const CONFIG = {
             { rotulo:"Transporte",            valor:0, chave:"transporte" },
             { rotulo:"Outro",                 valor:0, chave:"outro" },
           ]},
-        { id:"grauRisco", peso:0, texto:"Qual é o grau de risco da atividade principal?",
-          ajuda:"Ele vem do CNAE e vai de 1 a 4. Se não souber, sem problema: escolha “Não sei”.",
-          opcoes:[
-            { rotulo:"Grau 1",  valor:0, chave:"1" },
-            { rotulo:"Grau 2",  valor:0, chave:"2" },
-            { rotulo:"Grau 3",  valor:0, chave:"3" },
-            { rotulo:"Grau 4",  valor:0, chave:"4" },
-            { rotulo:"Não sei", valor:0, chave:"nao-sei" },
-          ]},
-        { id:"situacao", peso:0, texto:"Como está a empresa hoje em saúde e segurança do trabalho?",
-          opcoes:[
-            { rotulo:"Não tenho nada",            valor:0, chave:"nada" },
-            { rotulo:"Tenho parte",               valor:0, chave:"parte" },
-            { rotulo:"Tenho tudo, quero revisar", valor:0, chave:"tudo" },
-          ]},
       ]
     },
 
     /* ===================== BLOCO 1 — DOCUMENTOS-BASE (GRO / NR-01) ===================== */
     {
-      id:"documentos", titulo:"Documentos-base (GRO / NR-01)", area:"Documentos-base",
+      id:"documentos", titulo:"Documentos-base (GRO / NR-01)", etapa:"Documentos-base (PGR e PCMSO)", area:"Documentos-base",
       mostrarSe:(perfil)=> perfil.funcionarios !== "0",
       perguntas:[
-        { id:"pgr", peso:14, texto:"A empresa tem PGR (Programa de Gerenciamento de Riscos) atualizado?",
-          ajuda:"O PGR é o documento-base do gerenciamento de riscos exigido pela NR-01.",
+        { id:"pgr", peso:14, texto:"A empresa tem PGR atualizado?",
+          ajuda:"Programa de Gerenciamento de Riscos, exigido pela NR-01.",
           opcoes:[
-            { rotulo:"Sim, revisado no último ano",           valor:1,   chave:"sim" },
-            { rotulo:"Tenho, mas está vencido/desatualizado", valor:0.5, chave:"vencido" },
+            { rotulo:"Sim, revisado no último ano", valor:1,   chave:"sim" },
+            { rotulo:"Vencido ou desatualizado",    valor:0.5, chave:"vencido" },
             { rotulo:"Não tenho",                             valor:0,   chave:"nao" },
             { rotulo:"Não sei o que é",                       valor:0,   chave:"nao-sei" },
           ],
@@ -568,9 +612,9 @@ const CONFIG = {
         },
         { id:"psicossocial", peso:10,
           texto:(p, r)=> (r.pgr === "sim" || r.pgr === "vencido")
-            ? "O seu PGR já inclui os riscos psicossociais?"
-            : "A empresa já avalia os riscos psicossociais de alguma forma?",
-          ajuda:"São fatores como estresse, assédio, sobrecarga e metas abusivas. Com a atualização da NR-01, eles precisam constar no PGR.",
+            ? "O PGR já inclui os riscos psicossociais?"
+            : "A empresa já avalia os riscos psicossociais?",
+          ajuda:"Estresse, assédio, sobrecarga e metas abusivas. A NR-01 exige que constem no PGR.",
           opcoes:[
             { rotulo:"Sim",     valor:1, chave:"sim" },
             { rotulo:"Não",     valor:0, chave:"nao" },
@@ -587,8 +631,8 @@ const CONFIG = {
             };
           }
         },
-        { id:"pcmso", peso:14, texto:"A empresa tem PCMSO coordenado por médico do trabalho?",
-          ajuda:"PCMSO é o Programa de Controle Médico de Saúde Ocupacional (NR-07). Ele define os exames de cada função.",
+        { id:"pcmso", peso:14, texto:"Tem PCMSO coordenado por médico do trabalho?",
+          ajuda:"Programa de Controle Médico (NR-07): define os exames de cada função.",
           opcoes:[
             { rotulo:"Sim",     valor:1,   chave:"sim" },
             { rotulo:"Vencido", valor:0.5, chave:"vencido" },
@@ -610,10 +654,10 @@ const CONFIG = {
 
     /* ===================== BLOCO 2 — EXAMES OCUPACIONAIS (ASO) ===================== */
     {
-      id:"exames", titulo:"Exames ocupacionais (ASO)", area:"Exames",
+      id:"exames", titulo:"Exames ocupacionais (ASO)", etapa:"Exames ocupacionais (ASO)", area:"Exames",
       mostrarSe:(perfil)=> perfil.funcionarios !== "0",
       perguntas:[
-        { id:"admissional", peso:9, texto:"A empresa faz o exame admissional antes de o funcionário começar?",
+        { id:"admissional", peso:9, texto:"Faz o exame admissional antes de o funcionário começar?",
           opcoes:[
             { rotulo:"Sempre",   valor:1,   chave:"sempre" },
             { rotulo:"Às vezes", valor:0.5, chave:"asvezes" },
@@ -646,7 +690,7 @@ const CONFIG = {
             };
           }
         },
-        { id:"demissional", peso:7, texto:"A empresa faz o exame demissional no desligamento?",
+        { id:"demissional", peso:7, texto:"Faz o exame demissional no desligamento?",
           opcoes:[
             { rotulo:"Sim",      valor:1,   chave:"sim" },
             { rotulo:"Às vezes", valor:0.5, chave:"asvezes" },
@@ -662,8 +706,8 @@ const CONFIG = {
             };
           }
         },
-        { id:"aso", peso:6, texto:"A empresa emite e arquiva o ASO de cada exame?",
-          ajuda:"ASO é o Atestado de Saúde Ocupacional, gerado em cada exame.",
+        { id:"aso", peso:6, texto:"Emite e arquiva o ASO de cada exame?",
+          ajuda:"Atestado de Saúde Ocupacional, gerado em cada exame.",
           opcoes:[
             { rotulo:"Sim",     valor:1, chave:"sim" },
             { rotulo:"Não",     valor:0, chave:"nao" },
@@ -684,11 +728,11 @@ const CONFIG = {
 
     /* ===================== BLOCO 3 — LAUDOS E AGENTES NOCIVOS ===================== */
     {
-      id:"laudos", titulo:"Laudos e agentes nocivos", area:"Laudos",
+      id:"laudos", titulo:"Laudos e agentes nocivos", etapa:"Laudos e agentes nocivos", area:"Laudos",
       mostrarSe:(perfil)=> perfil.funcionarios !== "0",
       perguntas:[
         { id:"exposicao", peso:4, texto:"Há funcionários expostos a agentes nocivos ou situações de risco?",
-          ajuda:"Por exemplo: ruído, calor, produtos químicos, poeira, agentes biológicos, eletricidade ou trabalho em altura.",
+          ajuda:"Ruído, calor, produtos químicos, poeira, agentes biológicos, eletricidade ou altura.",
           opcoes:[
             { rotulo:"Sim",     valor:1, chave:"sim" },   // saber da exposição já é parte da conformidade
             { rotulo:"Não",     valor:1, chave:"nao" },
@@ -701,12 +745,11 @@ const CONFIG = {
               servico: "Levantamento ambiental e classificação dos riscos da sua operação.",
               prioridade: "media",
             };
-            // Ajuste por setor/grau de risco: "Não" em atividades onde a exposição é comum merece confirmação técnica
+            // Ajuste por setor: "Não" em setores onde a exposição é comum merece confirmação técnica
             const setorComum = CONFIG.setoresComExposicaoComum.indexOf(p.setor) >= 0;
-            const grauAlto = p.grauRisco === "3" || p.grauRisco === "4";
-            if(r.exposicao === "nao" && (setorComum || grauAlto)) return {
+            if(r.exposicao === "nao" && setorComum) return {
               titulo: "Confirmar tecnicamente a ausência de agentes nocivos",
-              risco: (setorComum ? "No setor de " + rotuloOpcao("setor", p.setor).toLowerCase() : "Em atividades de grau de risco " + p.grauRisco)
+              risco: "No setor de " + rotuloOpcao("setor", p.setor).toLowerCase()
                 + ", é comum haver ruído, poeira, produtos químicos ou agentes biológicos. Uma exposição não mapeada deixa PGR, PCMSO e eSocial incorretos.",
               servico: "Avaliação ambiental para confirmar (ou descartar) a exposição com base técnica.",
               prioridade: "media",
@@ -714,8 +757,8 @@ const CONFIG = {
             return null;
           }
         },
-        { id:"ltcat", peso:8, texto:"A empresa tem LTCAT (Laudo Técnico das Condições Ambientais do Trabalho)?",
-          ajuda:"O LTCAT embasa a aposentadoria especial e as informações do evento S-2240 no eSocial.",
+        { id:"ltcat", peso:8, texto:"Tem LTCAT (Laudo Técnico das Condições Ambientais)?",
+          ajuda:"Embasa a aposentadoria especial e o evento S-2240 do eSocial.",
           mostrarSe:(p, r)=> r.exposicao === "sim" || r.exposicao === "nao-sei",
           opcoes:[
             { rotulo:"Sim",             valor:1, chave:"sim" },
@@ -732,7 +775,7 @@ const CONFIG = {
             };
           }
         },
-        { id:"adicional", peso:6, texto:"A empresa paga adicional de insalubridade ou periculosidade com laudo que embase?",
+        { id:"adicional", peso:6, texto:"Paga insalubridade ou periculosidade com laudo?",
           mostrarSe:(p, r)=> r.exposicao === "sim" || r.exposicao === "nao-sei",
           opcoes:[
             { rotulo:"Sim, com laudo", valor:1, chave:"com-laudo" },
@@ -757,14 +800,14 @@ const CONFIG = {
 
     /* ===================== BLOCO 4 — eSocial (SST) ===================== */
     {
-      id:"esocial", titulo:"eSocial (SST)", area:"eSocial",
+      id:"esocial", titulo:"eSocial (SST)", etapa:"eSocial e treinamentos", area:"eSocial",
       mostrarSe:(perfil)=> perfil.funcionarios !== "0",
       perguntas:[
-        { id:"eventos", peso:9, texto:"A empresa está enviando os eventos de SST no eSocial?",
-          ajuda:"S-2210 (acidente de trabalho/CAT), S-2220 (exames) e S-2240 (agentes nocivos).",
+        { id:"eventos", peso:9, texto:"Envia os eventos de SST no eSocial?",
+          ajuda:"S-2210 (acidente/CAT), S-2220 (exames) e S-2240 (agentes nocivos).",
           opcoes:[
             { rotulo:"Sim, em dia",            valor:1,   chave:"sim" },
-            { rotulo:"Com pendências/atrasos", valor:0.5, chave:"pendencias" },
+            { rotulo:"Com atrasos",            valor:0.5, chave:"pendencias" },
             { rotulo:"Não envio",              valor:0,   chave:"nao" },
             { rotulo:"Não sei",                valor:0,   chave:"nao-sei" },
           ],
@@ -783,16 +826,16 @@ const CONFIG = {
 
     /* ===================== BLOCO 5 — COMPLEMENTOS POR PORTE ===================== */
     {
-      id:"complementos", titulo:"Complementos por porte", area:"Complementos",
+      id:"complementos", titulo:"Complementos por porte", etapa:"eSocial e treinamentos", area:"Complementos",
       mostrarSe:(perfil)=> perfil.funcionarios !== "0",
       perguntas:[
         { id:"cipa", peso:4,
           texto:(p)=> p.funcionarios === "1-19"
-            ? "A empresa tem um representante designado para as ações de prevenção (NR-05)?"
-            : "A empresa tem CIPA constituída ou representante designado (NR-05)?",
+            ? "Tem um representante designado para a prevenção (NR-05)?"
+            : "Tem CIPA constituída ou representante designado (NR-05)?",
           ajuda:(p)=> p.funcionarios === "1-19"
-            ? "Quando a empresa não precisa ter CIPA, a NR-05 pede que ela nomeie um representante."
-            : "A CIPA é obrigatória conforme o número de empregados e o grau de risco. Quando não é, a empresa nomeia um representante.",
+            ? "Sem obrigação de CIPA, a NR-05 pede a nomeação de um representante."
+            : "A CIPA depende do número de empregados e do grau de risco; sem ela, nomeia-se um representante.",
           opcoes:[
             { rotulo:"Sim",     valor:1, chave:"sim" },
             { rotulo:"Não",     valor:0, chave:"nao" },
@@ -808,8 +851,8 @@ const CONFIG = {
             };
           }
         },
-        { id:"treinamentos", peso:5, texto:"Os treinamentos das NRs aplicáveis são feitos e registrados?",
-          ajuda:"Por exemplo: integração de segurança, uso de EPI (NR-06), eletricidade (NR-10), altura (NR-35), conforme a atividade.",
+        { id:"treinamentos", peso:5, texto:"Os treinamentos das NRs são feitos e registrados?",
+          ajuda:"Ex.: integração, EPI (NR-06), eletricidade (NR-10), altura (NR-35).",
           opcoes:[
             { rotulo:"Sim",     valor:1,   chave:"sim" },
             { rotulo:"Parcial", valor:0.5, chave:"parcial" },
@@ -836,8 +879,9 @@ const CONFIG = {
 
 /* ------- Estado da sessão (somente em memória; nada vai para localStorage) ------- */
 const estado = {
-  tela: "hero",          // "hero" | "pergunta" | "captura" | "resultado"
-  indice: 0,             // posição na lista de perguntas visíveis
+  tela: "hero",          // "hero" | "filtro" | "pergunta" | "captura" | "resultado"
+  indice: 0,             // etapa (página) atual do questionário
+  filtro: null,          // "empresa" | "pessoa_fisica" (tela de filtro)
   respostas: {},         // { idPergunta: chave }
   rascunho: {},          // valores digitados no formulário (mantidos ao voltar)
   lead: null,            // dados confirmados do lead
@@ -870,7 +914,7 @@ function esc(s){
 }
 function getPerfil(){
   const r = estado.respostas;
-  return { funcionarios:r.funcionarios, setor:r.setor, grauRisco:r.grauRisco, situacao:r.situacao };
+  return { funcionarios:r.funcionarios, setor:r.setor };
 }
 function textoDe(v){ return typeof v === "function" ? v(getPerfil(), estado.respostas) : v; }
 function menosMovimento(){ return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
@@ -928,7 +972,7 @@ function formatarTelefone(d){
 }
 
 /* ==================================================================================================
-   PERGUNTAS VISÍVEIS (respeitam porte, setor e respostas anteriores)
+   ETAPAS E PERGUNTAS VISÍVEIS (respeitam porte, setor e respostas anteriores)
    ================================================================================================== */
 function blocosVisiveis(){
   const perfil = getPerfil(), r = estado.respostas;
@@ -940,19 +984,37 @@ function blocosVisiveis(){
   });
   return lista;
 }
+/* Páginas do questionário: blocos seguidos com a mesma "etapa" ficam na mesma página */
+function etapasVisiveis(){
+  const etapas = [];
+  blocosVisiveis().forEach(item=>{
+    const titulo = item.bloco.etapa || item.bloco.titulo;
+    let atual = etapas[etapas.length - 1];
+    if(!atual || atual.titulo !== titulo){ atual = { titulo:titulo, perguntas:[] }; etapas.push(atual); }
+    item.perguntas.forEach(q=> atual.perguntas.push({ q:q, bloco:item.bloco }));
+  });
+  return etapas;
+}
 function perguntasVisiveis(){
   const lista = [];
-  blocosVisiveis().forEach((item, bi)=> item.perguntas.forEach(q=> lista.push({ q:q, bloco:item.bloco, blocoIndice:bi })));
+  etapasVisiveis().forEach(e=> e.perguntas.forEach(it=> lista.push(it)));
   return lista;
 }
-function primeiraSemResposta(){
-  const l = perguntasVisiveis();
-  for(let i = 0; i < l.length; i++) if(estado.respostas[l[i].q.id] === undefined) return i;
+function etapaCompleta(etapa){ return etapa.perguntas.every(it=> estado.respostas[it.q.id] !== undefined); }
+function primeiraEtapaIncompleta(){
+  const etapas = etapasVisiveis();
+  for(let i = 0; i < etapas.length; i++) if(!etapaCompleta(etapas[i])) return i;
   return -1;
+}
+/* Muda quando uma resposta mostra/esconde perguntas ou troca textos na página atual */
+function assinaturaEtapa(){
+  const etapas = etapasVisiveis(), e = etapas[estado.indice];
+  return etapas.length + "|" + (e ? e.perguntas.map(it=> it.q.id + ":" + textoDe(it.q.texto)).join("|") : "");
 }
 
 /* ==================================================================================================
    NAVEGAÇÃO (integrada ao botão "voltar" do celular/navegador)
+   Telas: hero → filtro → pergunta (uma página por etapa) → captura → resultado
    ================================================================================================== */
 function irPara(tela, indice){
   estado.tela = tela;
@@ -964,8 +1026,9 @@ function irPara(tela, indice){
 }
 function voltar(){
   if(historicoOk) { history.back(); return; }
-  if(estado.tela === "captura") return irPara("pergunta", perguntasVisiveis().length - 1);
+  if(estado.tela === "captura") return irPara("pergunta", etapasVisiveis().length - 1);
   if(estado.tela === "pergunta" && estado.indice > 0) return irPara("pergunta", estado.indice - 1);
+  if(estado.tela === "pergunta") return irPara("filtro");
   irPara("hero");
 }
 window.addEventListener("popstate", (e)=>{
@@ -975,7 +1038,7 @@ window.addEventListener("popstate", (e)=>{
   render(true);
 });
 function avancar(){
-  const total = perguntasVisiveis().length;
+  const total = etapasVisiveis().length;
   if(estado.indice >= total - 1) irPara("captura");
   else irPara("pergunta", estado.indice + 1);
 }
@@ -983,13 +1046,16 @@ function avancar(){
 /* ==================================================================================================
    RENDERIZAÇÃO
    ================================================================================================== */
+const TELAS_DO_DIAGNOSTICO = ["pergunta", "captura", "resultado"];
 function render(moverFoco){
-  // Proteções: não pula perguntas sem resposta nem mostra resultado sem formulário enviado
-  if(estado.tela !== "hero"){
-    const ps = primeiraSemResposta();
-    if(ps >= 0 && (estado.tela !== "pergunta" || estado.indice > ps)){ estado.tela = "pergunta"; estado.indice = ps; }
+  // Proteções: só empresas entram no diagnóstico; não pula etapas incompletas;
+  // não mostra resultado sem o formulário enviado
+  if(TELAS_DO_DIAGNOSTICO.indexOf(estado.tela) >= 0 && estado.filtro !== "empresa"){ estado.tela = "filtro"; estado.indice = 0; }
+  if(TELAS_DO_DIAGNOSTICO.indexOf(estado.tela) >= 0){
+    const pi = primeiraEtapaIncompleta();
+    if(pi >= 0 && (estado.tela !== "pergunta" || estado.indice > pi)){ estado.tela = "pergunta"; estado.indice = pi; }
   }
-  if(estado.tela === "pergunta") estado.indice = Math.min(estado.indice, Math.max(0, perguntasVisiveis().length - 1));
+  if(estado.tela === "pergunta") estado.indice = Math.min(estado.indice, Math.max(0, etapasVisiveis().length - 1));
   if(estado.tela === "resultado" && !estado.lead) estado.tela = "captura";
 
   document.body.setAttribute("data-tela", estado.tela);
@@ -1001,7 +1067,8 @@ function render(moverFoco){
   window.scrollTo(0, 0);
 
   if(estado.tela === "hero") renderHero();
-  else if(estado.tela === "pergunta") renderPergunta();
+  else if(estado.tela === "filtro") renderFiltro();
+  else if(estado.tela === "pergunta") renderEtapa();
   else if(estado.tela === "captura") renderCaptura();
   else renderResultado();
 
@@ -1015,8 +1082,10 @@ function render(moverFoco){
 function atualizarProgresso(){
   if(estado.tela === "hero"){ $progresso.hidden = true; return; }
   $progresso.hidden = false;
-  const total = perguntasVisiveis().length + 1;   // +1 = formulário
-  const atual = estado.tela === "pergunta" ? estado.indice : (estado.tela === "captura" ? total - 1 : total);
+  const total = etapasVisiveis().length + 2;   // filtro + etapas + formulário
+  const atual = estado.tela === "filtro" ? 0
+    : estado.tela === "pergunta" ? 1 + estado.indice
+    : estado.tela === "captura" ? total - 1 : total;
   const pct = Math.round(atual / total * 100);
   $barra.style.width = pct + "%";
   $progresso.setAttribute("aria-valuenow", String(pct));
@@ -1029,6 +1098,7 @@ function renderHero(){
     ? "NR-01: riscos psicossociais já entram na fiscalização"
     : "NR-01: riscos psicossociais na fiscalização a partir de " + dataBR(CONFIG.nr01.dataFiscalizacao);
   const areas = CONFIG.blocos.filter(b=> b.area).map(b=> "<li>" + esc(b.area) + "</li>").join("");
+  const nEtapas = CONFIG.blocos.map(b=> b.etapa || b.titulo).filter((t, i, a)=> a.indexOf(t) === i).length;
 
   $app.innerHTML = `
     <section class="tela hero">
@@ -1040,7 +1110,7 @@ function renderHero(){
       <div class="hero-acao">
         <span class="selo">${ICONE.check} Gratuito e sem compromisso</span>
         <button type="button" class="btn btn-primario btn-largo" id="btnComecar">Começar diagnóstico</button>
-        <p class="hero-meta">Perguntas rápidas, de múltipla escolha. Seus dados só são pedidos no final.</p>
+        <p class="hero-meta">${nEtapas} etapas rápidas, de múltipla escolha. Seus dados só são pedidos no final.</p>
       </div>
 
       <div class="cartao hero-cartao">
@@ -1058,74 +1128,149 @@ function renderHero(){
       </div>
     </section>`;
 
-  document.getElementById("btnComecar").addEventListener("click", ()=>{
-    if(!estado.inicioRastreado){ estado.inicioRastreado = true; rastrear("inicio", {}); }
-    irPara("pergunta", 0);
-  });
+  document.getElementById("btnComecar").addEventListener("click", ()=> irPara("filtro"));
 }
 
-/* ---------- TELA 2: PERGUNTA ---------- */
-function renderPergunta(){
-  const lista = perguntasVisiveis();
-  const item = lista[estado.indice];
-  const q = item.q;
-  const totalBlocos = blocosVisiveis().length;
-  const resposta = estado.respostas[q.id];
-  const ajuda = textoDe(q.ajuda);
-  const ultima = estado.indice === lista.length - 1;
-
+/* ---------- TELA 2: FILTRO DE PÚBLICO (empresa com CNPJ?) ---------- */
+function renderFiltro(){
+  const F = CONFIG.filtro;
   $app.innerHTML = `
     <section class="tela">
-      <form class="cartao pergunta" id="formPergunta" novalidate>
-        <p class="etapa"><span>Etapa ${item.blocoIndice + 1} de ${totalBlocos}</span> · ${esc(item.bloco.titulo)}</p>
-        <div>
-          <h1 class="pergunta-titulo" id="tituloPergunta" tabindex="-1" data-foco>${esc(textoDe(q.texto))}</h1>
-          ${ajuda ? `<p class="ajuda" id="ajudaPergunta">${esc(ajuda)}</p>` : ""}
+      <div class="cartao filtro" id="cartaoFiltro">
+        <div class="etapa-topo">
+          <p class="etapa">Antes de começar</p>
+          <h1 class="pergunta-titulo" id="tituloFiltro" tabindex="-1" data-foco>${esc(F.titulo)}</h1>
+          <p class="ajuda">${esc(F.texto)}</p>
         </div>
-        <div class="opcoes" role="radiogroup" aria-labelledby="tituloPergunta" ${ajuda ? 'aria-describedby="ajudaPergunta"' : ""}>
-          ${q.opcoes.map(op=> `
-            <label class="opcao${resposta === op.chave ? " marcada" : ""}">
-              <input type="radio" name="resposta" value="${esc(op.chave)}"${resposta === op.chave ? " checked" : ""}>
-              <span>${esc(op.rotulo)}</span>
-            </label>`).join("")}
+        <div class="filtro-opcoes" role="group" aria-labelledby="tituloFiltro">
+          <button type="button" class="filtro-op" data-filtro="empresa"><strong>${esc(F.sim.titulo)}</strong><span>${esc(F.sim.detalhe)}</span></button>
+          <button type="button" class="filtro-op" data-filtro="pessoa_fisica"><strong>${esc(F.nao.titulo)}</strong><span>${esc(F.nao.detalhe)}</span></button>
         </div>
+      </div>
+    </section>`;
+  $app.querySelectorAll("[data-filtro]").forEach(b=> b.addEventListener("click", ()=> escolherFiltro(b.getAttribute("data-filtro"))));
+}
+
+let redirecionando = false;
+function escolherFiltro(resposta){
+  if(redirecionando) return;
+  rastrear("filtro-empresa", { resposta:resposta });
+
+  if(resposta === "empresa"){
+    estado.filtro = "empresa";
+    if(!estado.inicioRastreado){ estado.inicioRastreado = true; rastrear("inicio", {}); }
+    irPara("pergunta", 0);
+    return;
+  }
+
+  // Não é empresa: avisa e leva ao Instagram da Ultramed. A espera curta garante que o evento
+  // "filtro-empresa" chegue à Meta antes de a página ser trocada.
+  estado.filtro = "pessoa_fisica";
+  redirecionando = true;
+  const insta = CONFIG.empresa.instagramUrl;
+  const destino = insta || CONFIG.empresa.site;
+  const mensagem = CONFIG.filtro.mensagemNao.replace("Instagram", insta ? "Instagram" : "site");
+  document.getElementById("cartaoFiltro").innerHTML = `
+    <div class="etapa-topo" role="status">
+      <p class="etapa">Diagnóstico para empresas</p>
+      <h1 class="pergunta-titulo" tabindex="-1">Obrigado pelo interesse!</h1>
+      <p class="ajuda">${esc(mensagem)}</p>
+      <p class="ajuda"><a href="${esc(destino)}">Ir agora</a></p>
+    </div>`;
+  setTimeout(()=> navegarPara(destino), 900);
+}
+
+/* ---------- TELA 3: ETAPA DO QUESTIONÁRIO (várias perguntas na mesma página) ---------- */
+function renderEtapa(opcoes){
+  opcoes = opcoes || {};
+  const etapas = etapasVisiveis();
+  const etapa = etapas[estado.indice];
+  const ultima = estado.indice === etapas.length - 1;
+  const r = estado.respostas;
+
+  $app.innerHTML = `
+    <section class="tela${opcoes.semAnimacao ? " sem-animacao" : ""}">
+      <form class="cartao pergunta etapa-pagina" id="formEtapa" novalidate>
+        <div class="etapa-topo">
+          <p class="etapa">Etapa ${estado.indice + 1} de ${etapas.length}</p>
+          <h1 class="pergunta-titulo" id="tituloEtapa" tabindex="-1" data-foco>${esc(etapa.titulo)}</h1>
+        </div>
+        ${etapa.perguntas.map(it=>{
+          const q = it.q, ajuda = textoDe(q.ajuda), resp = r[q.id], id = esc(q.id);
+          return `
+        <fieldset class="q" data-q="${id}"${ajuda ? ` aria-describedby="ajuda-${id}"` : ""}>
+          <legend class="q-texto">${esc(textoDe(q.texto))}</legend>
+          ${ajuda ? `<p class="q-ajuda" id="ajuda-${id}">${esc(ajuda)}</p>` : ""}
+          <div class="op-lista">
+            ${q.opcoes.map(op=> `<label class="pil"><input type="radio" name="${id}" value="${esc(op.chave)}"${resp === op.chave ? " checked" : ""}><span>${esc(op.rotulo)}</span></label>`).join("")}
+          </div>
+          <p class="q-erro" id="erro-${id}"></p>
+        </fieldset>`; }).join("")}
+        <p class="sr-only" id="avisoEtapa" aria-live="polite"></p>
         <div class="nav">
           <button type="button" class="btn btn-voltar" id="btnVoltar"><span aria-hidden="true">←</span><span class="sr-only">Voltar</span></button>
-          <button type="submit" class="btn btn-primario" id="btnProxima"${resposta === undefined ? " disabled" : ""}>${ultima ? "Continuar" : "Próxima"}</button>
+          <button type="submit" class="btn btn-primario" id="btnProxima">${ultima ? "Continuar" : "Próxima"}</button>
         </div>
       </form>
     </section>`;
 
-  const form = document.getElementById("formPergunta");
-  const grupo = form.querySelector(".opcoes");
-  const btnProxima = document.getElementById("btnProxima");
+  const form = document.getElementById("formEtapa");
+  const assinatura = assinaturaEtapa();
 
-  // Toque/clique avança sozinho; pelo teclado (setas) só seleciona, e Enter avança.
+  // Ao tocar numa resposta, a página rola até a próxima pergunta sem resposta (pelo teclado, não)
   let viaPonteiro = false;
-  ["pointerdown", "touchstart", "mousedown"].forEach(ev=> grupo.addEventListener(ev, ()=>{ viaPonteiro = true; }, { passive:true }));
-  grupo.addEventListener("keydown", ()=>{ viaPonteiro = false; });
+  ["pointerdown", "touchstart", "mousedown"].forEach(ev=> form.addEventListener(ev, ()=>{ viaPonteiro = true; }, { passive:true }));
+  form.addEventListener("keydown", ()=>{ viaPonteiro = false; });
 
-  function selecionar(input){
-    estado.respostas[q.id] = input.value;
-    grupo.querySelectorAll(".opcao").forEach(l=> l.classList.toggle("marcada", l.contains(input)));
-    btnProxima.disabled = false;
-  }
-  grupo.querySelectorAll("input").forEach(input=>{
-    input.addEventListener("change", ()=> selecionar(input));
-    input.addEventListener("click", ()=>{
-      selecionar(input);
-      if(!viaPonteiro) return;
-      viaPonteiro = false;
-      const passo = estado.indice;
-      setTimeout(()=>{ if(estado.tela === "pergunta" && estado.indice === passo) avancar(); }, menosMovimento() ? 0 : 260);
-    });
+  form.addEventListener("change", (e)=>{
+    const input = e.target;
+    if(input.type !== "radio") return;
+    estado.respostas[input.name] = input.value;
+    const fs = input.closest(".q");
+    fs.classList.remove("faltando");
+    document.getElementById("erro-" + input.name).textContent = "";
+    const toque = viaPonteiro; viaPonteiro = false;
+
+    // A resposta mostrou/escondeu perguntas ou mudou textos (ex.: exposição → LTCAT): redesenha no lugar
+    if(assinaturaEtapa() !== assinatura){
+      const y = window.scrollY;
+      renderEtapa({ semAnimacao:true });
+      window.scrollTo(0, y);
+      if(toque) rolarParaPendente(input.name);
+      else {
+        const igual = Array.prototype.filter.call($app.querySelectorAll('input[name="' + input.name + '"]'), i=> i.value === input.value)[0];
+        if(igual) igual.focus();
+      }
+      return;
+    }
+    if(toque) rolarParaPendente(input.name);
   });
 
   form.addEventListener("submit", (e)=>{
     e.preventDefault();
-    if(estado.respostas[q.id] !== undefined) avancar();
+    const faltando = etapasVisiveis()[estado.indice].perguntas.filter(it=> estado.respostas[it.q.id] === undefined);
+    if(!faltando.length){ avancar(); return; }
+    faltando.forEach(it=>{
+      form.querySelector('.q[data-q="' + it.q.id + '"]').classList.add("faltando");
+      document.getElementById("erro-" + it.q.id).textContent = "Escolha uma opção.";
+    });
+    document.getElementById("avisoEtapa").textContent = faltando.length === 1 ? "Falta responder 1 pergunta." : "Faltam " + faltando.length + " perguntas.";
+    const primeiro = form.querySelector('.q[data-q="' + faltando[0].q.id + '"]');
+    const inp = primeiro.querySelector("input");
+    if(inp){ try{ inp.focus({ preventScroll:true }); }catch(err){} }
+    primeiro.scrollIntoView({ behavior: menosMovimento() ? "auto" : "smooth", block:"center" });
   });
   document.getElementById("btnVoltar").addEventListener("click", voltar);
+}
+
+/* Depois de uma resposta por toque: rola até a próxima pergunta sem resposta (ou até o botão) */
+function rolarParaPendente(nomeAtual){
+  const campos = Array.prototype.slice.call($app.querySelectorAll(".q"));
+  const pos = campos.findIndex(f=> f.getAttribute("data-q") === nomeAtual);
+  const pendentes = campos.filter(f=> estado.respostas[f.getAttribute("data-q")] === undefined);
+  const alvo = pendentes.filter(f=> campos.indexOf(f) > pos)[0] || pendentes[0] || document.getElementById("btnProxima");
+  if(!alvo) return;
+  setTimeout(()=> alvo.scrollIntoView({ behavior: menosMovimento() ? "auto" : "smooth", block:"nearest" }), menosMovimento() ? 0 : 160);
 }
 
 /* ---------- TELA 3: CAPTURA DO LEAD ---------- */
@@ -1375,11 +1520,10 @@ function renderResultado(){
       ${ctaTopo}
     </div>`;
 
-  // Abertura da lista de pendências: quantidade + texto conforme a situação informada no perfil
+  // Abertura da lista de pendências: quantidade encontrada
   const resumoPend = R.semFuncionarios ? "" : (R.pendencias.length === 0 ? "Nenhuma pendência encontrada."
     : R.pendencias.length + (R.pendencias.length === 1 ? " pendência encontrada" : " pendências encontradas")
       + (altas ? ", " + altas + " de prioridade alta." : "."));
-  const introSituacao = !R.semFuncionarios && CONFIG.introPorSituacao[R.perfil.situacao] ? " " + CONFIG.introPorSituacao[R.perfil.situacao] : "";
 
   // 3) Semáforo por área
   const semaforo = R.semFuncionarios ? "" : `
@@ -1443,7 +1587,7 @@ function renderResultado(){
       <section class="bloco" aria-labelledby="tPend">
         <div class="secao-cabecalho">
           <h2 class="secao" id="tPend">${R.semFuncionarios ? "Para contratar já em dia" : "O que falta para você ficar em dia"}</h2>
-          ${resumoPend || introSituacao ? `<p class="secao-sub">${esc(resumoPend + introSituacao)}</p>` : ""}
+          ${resumoPend ? `<p class="secao-sub">${esc(resumoPend)}</p>` : ""}
         </div>
         ${listaPend}
       </section>
@@ -1544,22 +1688,84 @@ function animarGauge(score){
     página antes de o evento chegar à Meta (principalmente no navegador interno do Instagram).
     Por isso o evento é disparado primeiro e a conversa abre 350 ms depois, na mesma aba.
 */
+/*
+  WhatsApp x WhatsApp Business: o link wa.me abre o app que o sistema escolher (em geral o
+  WhatsApp comum). No Android dá para abrir cada app pelo pacote, então lá a pessoa escolhe:
+    WhatsApp → com.whatsapp | WhatsApp Business → com.whatsapp.w4b
+  (se o app escolhido não estiver instalado, o Android abre o link wa.me normal).
+  No iPhone não existe um link confiável para escolher o app: segue o wa.me.
+*/
+const PACOTES_WHATSAPP = { whatsapp:"com.whatsapp", whatsapp_business:"com.whatsapp.w4b" };
 let abrindoWhatsApp = false;
+
 function abrirWhatsApp(e){
   const toque = !!(window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+  const android = /Android/i.test(navigator.userAgent);
   if(toque) e.preventDefault();
-  if(abrindoWhatsApp) return;          // evita evento duplicado em toque duplo
-  abrindoWhatsApp = true;
-  setTimeout(()=>{ abrindoWhatsApp = false; }, 1500);
+  if(toque && android){ abrirEscolhaWhatsApp(e.currentTarget); return; }
 
-  rastrear("whatsapp", dadosDoEvento());
-  enviarWebhook("whatsapp_click");
-
+  if(!registrarContato("padrao")) return;
   if(toque){
     const url = e.currentTarget.href;
-    setTimeout(()=>{ window.location.href = url; }, 350);
+    setTimeout(()=> navegarPara(url), 350);
   }
 }
+
+/* Evento Contact (uma vez por toque) + webhook */
+function registrarContato(app){
+  if(abrindoWhatsApp) return false;          // evita evento duplicado em toque duplo
+  abrindoWhatsApp = true;
+  setTimeout(()=>{ abrindoWhatsApp = false; }, 1500);
+  rastrear("whatsapp", Object.assign(dadosDoEvento(), { app:app }));
+  enviarWebhook("whatsapp_click");
+  return true;
+}
+
+/* Link do Android que abre um app específico, com o wa.me como alternativa */
+function linkIntentWhatsApp(app){
+  const R = estado.resultado;
+  const numero = String(CONFIG.empresa.whatsapp).replace(/\D/g, "");
+  return "intent://send/?phone=" + numero + "&text=" + encodeURIComponent(mensagemWhatsApp(R))
+    + "#Intent;scheme=whatsapp;package=" + PACOTES_WHATSAPP[app]
+    + ";S.browser_fallback_url=" + encodeURIComponent(linkWhatsApp(R)) + ";end";
+}
+
+/* Painel "Abrir a conversa no: WhatsApp | WhatsApp Business" (Android) */
+function abrirEscolhaWhatsApp(botaoOrigem){
+  fecharEscolhaWhatsApp();
+  const fundo = document.createElement("div");
+  fundo.className = "escolha-fundo";
+  fundo.id = "escolhaWhats";
+  fundo.innerHTML = `
+    <div class="escolha" role="dialog" aria-modal="true" aria-labelledby="escolhaTitulo">
+      <p class="escolha-titulo" id="escolhaTitulo">Abrir a conversa no:</p>
+      <button type="button" class="btn btn-whats" data-app="whatsapp">${ICONE.whats}<span>WhatsApp</span></button>
+      <button type="button" class="btn btn-whats-business" data-app="whatsapp_business">${ICONE.whats}<span>WhatsApp Business</span></button>
+      <button type="button" class="btn btn-texto" data-app="cancelar">Cancelar</button>
+    </div>`;
+  document.body.appendChild(fundo);
+
+  const fechar = ()=>{ fecharEscolhaWhatsApp(); if(botaoOrigem) botaoOrigem.focus(); };
+  fundo.addEventListener("click", (ev)=>{
+    if(ev.target === fundo) return fechar();
+    const b = ev.target.closest("[data-app]");
+    if(!b) return;
+    const app = b.getAttribute("data-app");
+    if(app === "cancelar") return fechar();
+    if(!registrarContato(app)) return;
+    const destino = linkIntentWhatsApp(app);
+    setTimeout(()=>{ fecharEscolhaWhatsApp(); navegarPara(destino); }, 350);
+  });
+  fundo.addEventListener("keydown", (ev)=>{ if(ev.key === "Escape") fechar(); });
+  fundo.querySelector("[data-app]").focus();
+}
+function fecharEscolhaWhatsApp(){
+  const f = document.getElementById("escolhaWhats");
+  if(f) f.remove();
+}
+
+/* Troca de página (separado para poder ser observado nos testes) */
+function navegarPara(url){ window.location.href = url; }
 
 /* Mensagem pré-preenchida do WhatsApp com o resumo do diagnóstico */
 function mensagemWhatsApp(R){
@@ -1623,11 +1829,15 @@ function iniciarRastreamento(){
 
 /* ---- Eventos do funil: inicio | lead | whatsapp ---- */
 function rastrear(evento, dados){
-  try{ window.dataLayer.push(Object.assign({ event:"diagnostico_" + evento }, dados)); }catch(e){}
+  // No GTM, o filtro usa o próprio nome ("filtro-empresa"); os demais, "diagnostico_<evento>"
+  try{ window.dataLayer.push(Object.assign({ event: evento === "filtro-empresa" ? evento : "diagnostico_" + evento }, dados)); }catch(e){}
 
   if(!CONFIG.rastreamento.metaPixelId || typeof window.fbq !== "function") return;
   try{
-    if(evento === "inicio"){
+    if(evento === "filtro-empresa"){
+      // Tela de filtro: resposta = "empresa" (segue para o diagnóstico) ou "pessoa_fisica" (vai ao Instagram)
+      fbq("trackCustom", "filtro-empresa", { resposta:dados.resposta });
+    } else if(evento === "inicio"){
       fbq("trackCustom", "InicioDiagnostico");
     } else if(evento === "lead"){
       // eventID permite deduplicar com a API de Conversões (o mesmo ID vai no webhook)
@@ -1635,7 +1845,7 @@ function rastrear(evento, dados){
         { content_name:"Diagnóstico SST", content_category:dados.classificacao, diagnostico_score:dados.score },
         { eventID:"lead_" + dados.lead_id });
     } else if(evento === "whatsapp"){
-      fbq("track", "Contact", { content_name:"Diagnóstico SST" }, { eventID:"contato_" + dados.lead_id });
+      fbq("track", "Contact", { content_name:"Diagnóstico SST", app:dados.app || "padrao" }, { eventID:"contato_" + dados.lead_id });
     }
   }catch(e){}
 }
@@ -1666,8 +1876,7 @@ function enviarWebhook(evento){
     pendencias: R.pendencias.map(p=> p.titulo).join(" | "),
     funcionarios: rotuloOpcao("funcionarios", R.perfil.funcionarios),
     setor: rotuloOpcao("setor", R.perfil.setor),
-    grau_risco: rotuloOpcao("grauRisco", R.perfil.grauRisco),
-    situacao: rotuloOpcao("situacao", R.perfil.situacao),
+    filtro: estado.filtro || "",
     utm_source: origem.utm_source || "", utm_medium: origem.utm_medium || "",
     utm_campaign: origem.utm_campaign || "", utm_content: origem.utm_content || "",
     utm_term: origem.utm_term || "", utm_id: origem.utm_id || "",

@@ -83,9 +83,10 @@ Use o evento **Lead** (envio do formulário) como conversão da campanha. O even
 | Momento | Meta Pixel | `dataLayer` (GTM) |
 |---|---|---|
 | Abrir a página | `PageView` | — |
-| Clicar em "Começar diagnóstico" | `InicioDiagnostico` (personalizado) | `diagnostico_inicio` |
+| Responder o filtro "É uma empresa?" | `filtro-empresa` (personalizado), com `resposta` = `empresa` ou `pessoa_fisica` | `filtro-empresa` |
+| Responder "Sim, é uma empresa" (o diagnóstico começa) | `InicioDiagnostico` (personalizado) | `diagnostico_inicio` |
 | Enviar o formulário | `Lead` | `diagnostico_lead` |
-| Clicar no WhatsApp | `Contact` | `diagnostico_whatsapp` |
+| Clicar no WhatsApp | `Contact`, com `app` = `whatsapp`, `whatsapp_business` ou `padrao` | `diagnostico_whatsapp` |
 
 O Pixel **não recebe dados pessoais**: só score, classificação e quantidade de pendências.
 
@@ -93,6 +94,22 @@ Os eventos são os mesmos no computador e no celular:
 - **PageView** é contado uma vez por visita. O Pixel está configurado para não contar cada pergunta como uma página nova (`fbq.disablePushState`).
 - **Contact no celular:** o toque no WhatsApp registra o evento e só abre a conversa 0,35 s depois. Sem essa espera, o app do WhatsApp poderia abrir antes de o evento sair, principalmente no navegador interno do Instagram. No computador, o WhatsApp abre em outra aba e o resultado continua na tela.
 - Bloqueadores de anúncio e navegadores com proteção contra rastreamento podem impedir o Pixel em qualquer aparelho. Para cobrir esses casos, o caminho é a API de Conversões.
+
+### Fluxo do questionário
+1. **Início**: botão "Começar diagnóstico".
+2. **Filtro**: "O diagnóstico é para uma empresa?".
+   - **Sim, é uma empresa**: o diagnóstico começa.
+   - **Não, sou pessoa física**: aparece um aviso e, cerca de 1 s depois, a pessoa é levada ao Instagram da Ultramed (`CONFIG.empresa.instagramUrl`). A espera garante que o evento `filtro-empresa` chegue à Meta.
+3. **5 etapas**, cada uma com as perguntas do mesmo assunto na mesma página: Sua empresa · Documentos-base · Exames · Laudos · eSocial e treinamentos. Perguntas que dependem de outra aparecem na hora, na mesma página (ex.: LTCAT só se houver exposição). Empresas sem CLT respondem só a etapa 1.
+4. **Formulário** (nome e empresa) e **resultado**.
+
+Para criar públicos personalizados ou conversões, use o evento `filtro-empresa` com o parâmetro `resposta`. Por exemplo, um público de quem respondeu `pessoa_fisica`, para excluir das campanhas.
+
+### WhatsApp ou WhatsApp Business
+O link comum do WhatsApp (`wa.me`) abre o app que o celular escolher, em geral o WhatsApp comum.
+- **Android:** ao tocar no botão, a pessoa escolhe **WhatsApp** ou **WhatsApp Business**, e o app certo abre direto. Se o app escolhido não estiver instalado, abre o link `wa.me`.
+- **iPhone:** a Apple não permite escolher o app por link. Abre o `wa.me`, e o iPhone decide qual app usar.
+- **Computador:** o WhatsApp Web ou o app de desktop abre em outra aba.
 
 ### Sem webhook: como o lead chega
 Hoje o formulário pede só **nome e empresa**, que servem para personalizar o resultado e a mensagem do WhatsApp. Nada é gravado em servidor. **O lead chega à Ultramed quando a pessoa toca no botão do WhatsApp e envia a mensagem.** Quem preenche e não clica fica registrado só como evento `Lead` na Meta, sem os dados de contato.
@@ -111,6 +128,8 @@ Tudo fica no objeto `CONFIG`, no início do `<script>` do `index.html`:
 - **Perguntas, opções e pesos**: `CONFIG.blocos`. O valor de cada opção multiplica o peso da pergunta: `1` = em dia, `0.5` = parcial, `0` = não/não sei. O score é normalizado de 0 a 100.
 - **Pendências**: cada pergunta tem uma função `pendencia` com título, risco, serviço da Ultramed e prioridade.
 - **Quando cada pergunta aparece**: `mostrarSe`. Por exemplo, o LTCAT só aparece quando há exposição, e empresas sem CLT vão direto ao formulário.
+- **Etapas (páginas)**: o campo `etapa` de cada bloco. Blocos seguidos com a mesma `etapa` ficam na mesma página, e cada bloco continua sendo uma área separada no semáforo.
+- **Filtro**: textos em `CONFIG.filtro`. O destino de quem não é empresa fica em `CONFIG.empresa.instagramUrl`.
 - **Faixas do score**: `CONFIG.faixas` (Crítico 0–40, Atenção 41–70, Bom 71–100).
 - **Cores**: `CONFIG.marca` (hoje com os verdes da logo: `#00853b` e `#205830`). As cores do semáforo ficam no `:root` do `<style>`.
 - **Logo**: `CONFIG.empresa.logoUrl` (arquivo `logo-ultramed.png`, na mesma pasta).
