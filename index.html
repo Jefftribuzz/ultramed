@@ -230,6 +230,8 @@
   .q.faltando .q-texto{ color:var(--critico); }
   .q.faltando .pil span{ border-color:#e3aaa4; }
   .etapa-pagina .nav{ margin-top:24px; }
+  .aviso-curto{ display:flex; gap:10px; align-items:flex-start; margin-top:20px; padding:12px 14px; border-radius:var(--raio-sm); background:var(--azul-suave); color:var(--azul); font-size:.9375rem; font-weight:600; }
+  .aviso-curto svg{ flex:none; margin-top:2px; }
   .sem-animacao{ animation:none; }
 
   /* ============================ FILTRO (empresa com CNPJ?) ============================ */
@@ -525,6 +527,8 @@ const CONFIG = {
 
   /* ------- Resultado para empresas sem empregados CLT ------- */
   semFuncionarios: {
+    // Aviso na etapa 1 quando a resposta é "Nenhum ainda" (o diagnóstico pula as etapas 2 a 5)
+    avisoEtapa: "Sem funcionários CLT, o diagnóstico é mais curto: vamos direto ao que você precisa para a primeira contratação.",
     titulo: "Sua empresa ainda não tem empregados CLT",
     texto: "Por enquanto, a maior parte das obrigações de SST não se aplica. Elas começam na primeira contratação, e algumas precisam estar prontas antes do primeiro dia de trabalho.",
     itens: [
@@ -1187,12 +1191,13 @@ function renderEtapa(opcoes){
   const etapa = etapas[estado.indice];
   const ultima = estado.indice === etapas.length - 1;
   const r = estado.respostas;
+  const semClt = r.funcionarios === "0";   // caminho curto: só a etapa 1
 
   $app.innerHTML = `
     <section class="tela${opcoes.semAnimacao ? " sem-animacao" : ""}">
       <form class="cartao pergunta etapa-pagina" id="formEtapa" novalidate>
         <div class="etapa-topo">
-          <p class="etapa">Etapa ${estado.indice + 1} de ${etapas.length}</p>
+          <p class="etapa">${semClt ? "Diagnóstico rápido" : "Etapa " + (estado.indice + 1) + " de " + etapas.length}</p>
           <h1 class="pergunta-titulo" id="tituloEtapa" tabindex="-1" data-foco>${esc(etapa.titulo)}</h1>
         </div>
         ${etapa.perguntas.map(it=>{
@@ -1206,6 +1211,7 @@ function renderEtapa(opcoes){
           </div>
           <p class="q-erro" id="erro-${id}"></p>
         </fieldset>`; }).join("")}
+        ${semClt ? `<p class="aviso-curto" role="status">${ICONE.check}<span>${esc(CONFIG.semFuncionarios.avisoEtapa)}</span></p>` : ""}
         <p class="sr-only" id="avisoEtapa" aria-live="polite"></p>
         <div class="nav">
           <button type="button" class="btn btn-voltar" id="btnVoltar"><span aria-hidden="true">←</span><span class="sr-only">Voltar</span></button>
